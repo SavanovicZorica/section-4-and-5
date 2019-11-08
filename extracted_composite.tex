@@ -1,0 +1,292 @@
+\begin{center}
+  \section{ Composite components}
+\end{center}
+
+
+To extract the type of a composite component it is more challenging than for a base component. The key role is to extract the type of the inner component that communicates also with an external environment and its local protocol, where all the inner components can carry-out the protocol.
+
+
+\vspace{1cm}
+
+\subsection{Type extraction}
+\vspace{0.5cm}
+
+
+
+\begin{tabular}{l l}
+
+Let us recap how we define the forwarders: \\
+$F::=z\leftarrow w\ |\ F,F$\\
+
+\end{tabular}
+
+
+\vspace{0.5cm}
+
+
+Part of a recursion:
+
+\vspace{0.5cm}
+
+$\rep (LP)::=\{z|LP=\context[recX.\context'[z?:t_b.LP']]\lor LP=\context[recX.\context'[z!:t_b.LP']]\}$
+
+\vspace{0.5cm}
+
+Free ports of a local protocol:
+
+\vspace{0.5cm}
+$\fp(LP)::= \{z|LP=$ $\context[z?:t_b.LP']$ $\lor LP=\context[z!:t_b.LP'] \lor LP=\context[recX.\context'[z?:t_b.LP']] \lor LP=\context[recX.\context'[z!:t_b.LP']]\}$
+
+\vspace{0.5cm}
+
+Context $\context$:\\
+
+$\context[\  \cdot \ ]::=x?:t_b.\context[\ \cdot \ ]\ |\ y!:t_b.\context[\ \cdot \ ]\  |\ \cdot$ \\
+
+\vspace{0.5cm}
+
+
+
+
+
+\textbf{External ports}:
+
+With $E_x(F)$ and $E_y(F)$ we define the two sets of ports, one for input and one for output from the interface of the inner component that has values forwarded from/to external environment.
+
+\vspace{0.5cm}
+\begin{tabular}{l}
+     $E_x(F)::=\{x\ |\ \exists \omega : F=x\leftarrow \omega,F'\}$\\
+      $E_y(F)::=\{y\ |\ \exists \omega : F=\omega \leftarrow y,F'\}$
+\end{tabular}
+
+\vspace{0.5cm}
+
+
+
+
+
+\textbf{Transitive dependencies:}
+
+\vspace{0.5cm}
+Let $LP$ be the local protocol of a composite component. Two ports $x'$ and $y'$, such that $x',y'\in \fp(LP)$ are in the relation $\rel_i$ for some $i\in \{1,2,3,4,5,6\}$, defined as:\\
+
+\vspace{0.5cm}
+
+\begin{tabular}{l l l}
+    
+$y'\rel^{LP}_1 x'$ & if & $LP=LP^1=\context[x'?:t_b.\context'[y'!:t_b'.LP']]$ and $y'\notin \rep(LP)$\\
+
+$y'\rel^{LP}_2 x'$ & if & $LP=LP^2=\context[y'!:t_b'.\context'[x'?:t_b.LP']]$ and $x'\notin \rep(LP)$\\
+$y'\rel^{LP}_3 x'$ & if & $LP=LP^3=\context[y'!:t_b'.\context'[recX.\context''[x'?:t_b.LP']]]$ and $y'\notin \rep(LP)$\\
+$y'\rel^{LP}_4 x'$ & if & $LP=LP^4=\context[x'?:t_b.\context'[recX.\context''[y'!:t_b'.LP']]]$ and $x'\notin \rep(LP)$\\
+$y'\rel^{LP}_5 x'$ & if & $LP=LP^5=\context[recX.\context'[y'!:t_b'.\context''[x'?.LP']]]$\\
+$y'\rel^{LP}_6 x'$ & if & $LP=LP^6=\context[recX.\context'[x'?:t_b.\context''[y'!:t_b'.LP']]]$\\
+
+
+\end{tabular}
+
+\vspace{0.5cm}
+
+
+Let $K'=[\tilde{x'}>\tilde{y'}]\{G;r=K,R;D;p[F]\}$ be the composite component, $T_r=\{\widetilde{x:t_b},\C\}$ the type of the `special' component $K$ and $LP$ the local protocol. \\
+If:\\
+
+\begin{enumerate}
+    \item  $\C=[y:{t^1}_b]:\B:[[x':t_b']:M',\D'],[y':t_b'']:\B':[[x:{t^2}_b]:M,\D],\C'$, where $x\in E_x(F)$, $y\in E_y(F)$ and $x',y' \in \fp(LP)$ and $y'\rel^{LP}_i x'$, where $i\in \{2,3,5\}$ we say that the port $y$ \textbf{transitively depends} on the port $x$. 
+    \item $\C=[y:{t^1}_b]:\B:[[x':t_b']:M',\D'],[y':t_b'']:\B':[[x:{t^2}_b]:M,\D],\C'$, where $x\in E_x(F)$, $y\in E_y(F)$ and $x',y' \in \fp(LP)$ and $y'\rel^{LP}_6 x'$, it is untypable program.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+Value flowing:
+
+
+Values at the runtime may not be captured in a queue of a binder, or other words, in the list of the dependencies. The values might be flowing (e.g. Table \ref{tab:g_semantics}, \textbf{GRVal2}) from one component to another one. We need to capture this values when we want to extract the type of a composite component in order to give an accurate number of values.
+
+
+
+If $LP=LP^5=$ $\context[recX.\context'[y'!:t_b'.\context''[x'?:t_b.LP']]=\context'''[x'?:t_b.LP'']$ then if $x',y'\notin \fp(\context'''[\ \cdot\ ])$  then $\vf(x',y')=1$, otherwise $\vf(x',y')=0$\\
+
+
+
+%\begin{proposition}\thlabel{nconst}
+
+%Let $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}$ be the composite component and $K\Downarrow T$, $\overline{K}\Downarrow T_r=\{\tilde{z};\C\}$ and let $LP=G\downharpoonright_r$. Then:\\
+
+%$\fn$ is a constant, up to input on $x$ or output on $y$.
+
+
+%\end{proposition}
+
+
+
+
+\vspace{1cm}
+
+Direct dependencies of $y$:\\
+
+
+Since we need to capture the type of a composite components, we need to define on which input ports from the interface of the composite component the output port depends on. A port $y$ of the composite component \textit{directly} depends on a port $x$ if the port of internal component that forwards a value to the port $y$ depends on the input port that receives a values forwarded from the port $x$.
+
+
+
+
+$\dd::=\{[x:t_b]:M\ |\ \C=[y:t_b']:\B:[[x:t_b]:M,D],\C' \wedge x \in E_x(F)  \wedge y \in E_y(F) \}$\\
+
+Transitive dependencies of $y$:
+
+
+An output port $y$ \textit{transitively} depends on an external input port if the values that it needs for its dependencies to be satisfied, depend on the values received on the free (input) ports of the protocol, whose values depend on input from the external ports. Since the components can carry-out the protocol, the protocol will provide that these values will be input eventually on the ports that we need to be able to output on $y$.
+
+
+
+
+
+$\dt::=
+\\ 
+\{[x:t_b]:\ic|(\C=[[y:{t^1}_b]:t_b]:\B:[[x':t_b']:M',D'],[y':t_b'']:\B':[[x:t_b]:0,D],\C' \lor \C=[y:{^1}t_b]:\B:[[x':t_b']:M',D'],[y':t_b'']:\B':[[x:t_b]:\ic,D],\C') \wedge x\in E_x(F) \wedge y\in E_y(F) \wedge (y'\rel^{LP}_2 x' \lor y'\rel^{LP}_3 x' \lor ((M\neq \piv \lor M'\neq \piv)\wedge y'\rel^{LP}_5 x' \wedge \vf(x',y')=0)) \\
+\\
+\{[x:t_b]:\fn|\C=[y:{t^1}_b]:\B:[[x':t_b']:N',D'],[y':t_b'']:\B':[[x:t_b]:N,D],\C' \wedge x\in E_x(F) \wedge y\in E_y(F)   \wedge y'\rel^{LP}_5 x')  \}$\\
+
+
+\vspace{0.5cm}
+
+
+Number of values received from the port $x$ on the port $y$.
+
+To have an accurate number of values received on the ports in the list of dependencies of the output port while extracting the type, we need to capture these values, since in runtime these values might be captured in the dependencies of other output ports or flowing from/to other (inner) components while carrying-out the protocol.  
+
+
+
+
+
+$\fn=\\
+\begin{cases}
+
+N & \mbox{if } \C=[y:{t^1}_b]:\B:[[x:t_b]:N,D],\C' \wedge x\in E_x(F) \wedge y\in E_y(F)  \\
+
+N+N'+\vf(x',y') & \mbox{if } \C=[y:{^1}t_b]:\B:[[x':t_b']:N',D'],[y':t_b'']:\B':[[x:t_b]:N,\D],\C' \wedge \\
+&  \mbox{\hspace{0.5cm}} x\in E_x(F) \wedge y\in E_y(F) \wedge y'\rel^{LP}_5 x'
+
+
+
+
+\end{cases}$
+
+
+
+
+
+
+
+
+
+\begin{definition}\thlabel{priorityrelation}
+
+
+
+
+Let $\W$ be the set of tuples of the form $[x:t_b]:M$. Let \pr: $\W \rightarrow \W$ be the relation (``Priority relation'') defined as follows: \\
+
+\begin{center}
+
+\begin{tabular}{r l l}
+
+$\pr(\emptyset)$  & $\triangleq$  & $\emptyset$\\
+
+$\pr(\{[x:t_b]:M\} \cup \W)$ &  $\triangleq$ & $\{[x:t_b]:M\} \cup \pr(\W)$ \\
+
+& \hfill  & if $x \notin \elem(\W)$\\
+
+$\pr(\{[x:t_b]:M\} \cup \W)$ &  $\triangleq$ & $\{[x:t_b]:M\} \cup \pr(\W) \setminus \{[x:t_b]:M'\}$ \\ 
+& \hfill & if $[x:t_b]:M' \in \pr(\W)$ and $M=N$ and $M'=\ic$ \\
+ 
+ $\pr(\{[x:t_b]:M\} \cup \W)$ & $\triangleq$ &  $\pr(\W)$\\ 
+ 
+ & \hfill & if $[x:t_b]:M' \in \pr(\W)$ and $M'=N'$ and $M=\ic$\\
+        
+\end{tabular}
+
+\end{center}
+\vspace{2mm}
+where $x\in \elem(\W)$ if $[x:t_b]:M \in \W$ for some $M$ and $t_b$.
+\end{definition}
+\vspace{0.5cm}
+
+
+
+Dependency on $y$.
+
+$D(y,\C,LP,F)=[\stl(\pr(\dd \cup \dt))]$
+
+\vspace{0.5cm}
+
+
+
+
+
+
+
+
+
+Boundaries of $y$.
+\vspace{0.5cm}
+
+$\B_A(E_y(F),LP,\C,y)=min\{\{N'| \exists x': \C=[y:{t^1}_b]:\B:[[x':t_b']:M':N',D'],\C'\wedge x'\notin(\fp(LP)\cup Ex(F))\}\cup \{0| \exists x': \C=[y:{^1}t_b]:\B:[[x':t_b']:\ic,D'],\C'\wedge x'\notin(\fp(LP)\cup Ex(F))\}$ \\
+
+$\B_B(E_y(F),LP,\C,y)=min\{\{N'| \exists x': \C=[y:{t^1}_b]:\B:[[x':t_b']:N',D'],\C'\wedge x'\in \fp(LP) \wedge x'\notin(\rep(LP) \cup Ex(F))\}$\\
+
+
+
+
+$B(y,LP,\C)=min\{\B,\B_A(E_y(F),LP,\C,y),\B_B(E_y(F),LP,\C,y)\}$
+
+
+
+\vspace{0.5cm}
+
+
+Renaming operation: 
+
+Renaming operation denoted by $\ren(\cdot)$ is defined as follows:\\
+
+
+\begin{tabular}{l l l l}
+
+$\ren(\emptyset)$ & $ \triangleq$ & $\emptyset$ & \\
+$\ren(F,\{\widetilde{x:t_b};\C\})$ & $\triangleq$  & $\{\ren(F,\widetilde{x:t_b});\ren(F,\C))$ \\
+$\ren(F,\{[x':t_b],[x'':t_b\})$ & $\triangleq$ & $\{F,\ren(F,[x':t_b]),\ren(F,[x'':t_b])\}$ & \\
+
+
+$\ren[F,\D',\D'']$ & $\triangleq$ & $\ren(F,\D'),\ren(F,D'')$ & \\
+
+$\ren(F,[x:t_b]:M)$ & $\triangleq$ & $\ren(F,[x:t_b]):M$ & \\
+
+$\ren(F,\C',\C'')$  & $\triangleq$ & $ \ren(F,\C'),\ren(F,\C'')$ & \\
+
+$\ren(F,[y':t_b]:\B:[\D])$  & $\triangleq$  & $ \ren(F,[y':t_b]):\B:[F,\ren[D]]$ & \\
+
+
+$\ren(F,[x':t_b])$ & $\triangleq$ & $ [x:t_b]$ & if $F=x'\leftarrow x,F'$\\
+
+$\ren(F,[y':t_b])$ & $\triangleq$ & $ [y:t_b]$ & if $F=y\leftarrow y',F'$\\
+
+
+
+\end{tabular}
+
+
+\vspace{1cm}
+
+
+
+\textbf{Extracted type}:\\
+
+
+Let $K=[\tilde{x'}>\tilde{y'}]\{G;r=\overline{K},R;D;r[F]\}$ be the composite component and $LP=G\downharpoonright_r$ be the local protocol. If we assume that the component $\overline{K}$ has a type $T_r=\{\tilde{x};\C\}$, then the extracted type from $LP$ and $T_r$ is $T(LP,T_r,F)$, where: \\
+
+$T(LP,T_r,F)=\ren(F,\{\{x:t_b|x\in E_x(F)\};\stl([y:t_b']:\B(y,LP,\C):[\D(y,\C,LP,F)]|y\in E_y(F)) \})$.
+\hfill
+
+$T_r=\{\widetilde{x:{t^1}_b};\C\}$
+

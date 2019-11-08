@@ -1,0 +1,99 @@
+\subsection{Properties of types}
+ 
+ Since we define the type in the same way for the base and for the composite components we have same properties that that we try to capture when it comes to evolution of the type. Moreover, as previously said the propositions will help as to easily prove lemmas, and lemmas to prove safety.
+ 
+ In order to make proofs more concise we define the function $\op$. This function by given as an argument the constraint and the port on which the value is received gives us as a result (according to the semantics of a typing language from Table~\ref{tab:input_semantics}) the evolved constraint.
+ 
+ \begin{definition}\thlabel{op} By $\op(\C,x)$ we denote the constraint defined as follows:\\
+ 
+ 
+ \begin{tabular}{l l l}
+   $ \op(\C_1,\C_2,x)$ & $\triangleq$ & $\op(\C_1,x),\op(\C_2,x)$\\
+   
+    $\op(\constr{y}{t_b'}{\B}{\pev{x}{N},\D},x)$ & $\triangleq$ & $\constr{y}{t_b'}{\B}{\pev{x}{N+1},\D}$\\
+    
+    $\op(\constr{y}{t_b'}{\B}{\ind{x},\D},x)$ &  $\triangleq$ & $\constr{y}{t_b'}{\B}{\D}$\\
+    
+    $\op (\constr{y}{t_b'}{\B}{\D},x)$ & $\triangleq$ & $\constr{y}{t_b'}{\B}{\D}$ (if $x\notin dom(\D)$. 
+    
+\end{tabular}
+ 
+ 
+ 
+ \end{definition}
+ 
+ 
+ 
+ 
+\begin{proposition}\thlabel{prop3}  If $T=\{\widetilde{\depen{x}{t_b'}}; \C\} \ \wedge \   \C\inputx\C'$ then $\C'=\op (\C,x)$.
+
+
+\end{proposition}
+ 
+\begin{proof}{By induction on the derivation of $\C\inputx\C'$}.\\
+
+
+[T1] $\C_1,\C_2\inputx\C_1',\C_2'$ by inversion we know that  $\C_1\inputx\C_1'$ and by induction hypothesis we know that the property holds for $\C_1'$. Also, by inversion  we know that $\C_2\inputx\C_2'$ and by i.h. property holds also for $\C_2'$. Directly we can conclude that the property will hold also for $\C_1',\C_2$\\
+
+[T6] $\constr{y}{t_b}{\B}{\pev{x}{N},\D}\inputx \constr{y}{t_b}{\B}{\pev{x}{N+1},\D}$ we can directly conclude that the property holds. \\
+
+
+[T5] $\constr{y}{t_b}{\B}{\ind{x},\D}\inputx \constr{y}{t_b}{\B}{\D}$, we can directly conclude that the property holds. \\
+
+
+[T4] $\constr{y}{t_b}{\B}{\D}\inputx \constr{y}{t_b}{\B}{\D}$, by inversion  we know that $x\notin dom(\D)$, so the number of received values on $x$ remained the same, which implies that the property holds also for this case.
+
+\end{proof}
+ 
+\begin{lemma}\thlabel{tinputevol} If $T=\{\widetilde{\depen{x}{t_b'}};\C\}$ and $T\inx T'$ then $\C\inputx \C'$.
+
+\end{lemma}
+ 
+\begin{proof}{By induction on the derivation of $T \inx T'$.}\\
+
+[T2] $\{\widetilde{\depen{x}{t_b'}};\C\}\inx \{\widetilde{\depen{x}{t_b'}};\C'\}$, by inversion we know that $\C\inputx \C'$, so we can directly conclude that the property holds.\\
+
+[T3] $\{\widetilde{\depen{x}{t_b'}};\emptyset \}\inx \{\widetilde{\depen{x}{t_b'}};\emptyset \}$, since there is no dependency on $x$ in $T$, the property holds (since $\C=\emptyset$ the proof is direct).
+
+\end{proof}
+
+
+The next proposition will help us prove~\thref{toutputevol}. When we have an output on some port the main changes happen in the list of the dependencies. Following the rules from the Table~\ref{tab:output_semantics} we can conclude that: If the list of dependencies is empty, it remains empty. If it was a per each value dependency, the number (if greater than 0) of values available on the port for computing the output value decrements. Instead, if it was an initial dependency, the dependency stops to exist.
+
+\begin{proposition}\thlabel{prop4} If $\D \xrightarrow{\text{!}} \D'$ then $\forall x\in dom(\D)\ |\ \D=\pev{x}{N},\D_1 \Rightarrow \D'=\pev{x}{N-1},\D_1' $. 
+
+
+\end{proposition}
+ 
+\begin{proof}{By induction on the derivation of $\D \xrightarrow{\text{!}} \D'$.}\\
+
+[T10] $\pev{x}{N} \xrightarrow{\text{!}} \pev{x}{N-1}$, we can directly conclude that the property holds.\\
+
+[T7] $\D_1,\D_2 \xrightarrow{\text{!}} \D_1',\D_2'$, by inversion we know that $\D_1 \xrightarrow{\text{!}} \D_1'$ and that $\D_2 \xrightarrow{\text{!}} \D_2'$, and by i.h. property holds for $\D_1'$ and for $\D_2'$. Directly we can conclude that the property holds for $\D_1',\D_2'$.
+
+\end{proof}
+
+
+
+
+
+
+Following the rules from the Table~\ref{tab:output_semantics} and \thref{prop4} we obtain the proof for the following lemma:
+
+\begin{lemma}\thlabel{toutputevol} If $T=\{\widetilde{\depen{x}{t_{b_1}}};\C\}\outy \{\widetilde{\depen{x}{t_{b_1}}};\C'\}=T'$, then:\\
+
+If $\C=\constr{y}{t_b}{\B}{\D},\C_1$ then $(\forall x:\D=\pev{x}{N},\D_1\Rightarrow \C'=\constr{y}{t_b}{\B-1}{\pev{x}{N-1},\D_1'},\C_1')$.
+
+
+
+\end{lemma}
+ 
+\begin{proof}{By induction on the derivation of $T \outy T'$.}\\
+
+[T8] $\{\widetilde{\depen{x}{t_{b_1}}};\ \constr{y}{t_b}{\B}{\D}\}\outy \{\widetilde{\depen{x}{t_{b_1}}};\ \constr{y}{t_b}{\B-1}{\D'}\}$, by inversion we know that $\D \xrightarrow{\text{!}} \D'$ and that $\B>0$, so the property holds.\\
+
+[T9] $\{\widetilde{\depen{x}{t_{b_1}}};\ \constr{y}{t_b}{\B}{\emptyset}\}\outy \{\widetilde{\depen{x}{t_{b_1}}};\ \constr{y}{t_b}{\B-1}{\emptyset}\}$, since there are no dependencies on $y$ and by inversion we know that $\B>0$, so the property holds.
+
+\end{proof}
+
+Both \thref{tinputevol} with an input and \thref{toutputevol} with an output suffer the changes only in the second part of the type description-the constraint, where the set of input ports together with the attached type remain the same. Moreover, the number of the constraints remains the same, but it differs from its predecessor. This coincides with the evolution of the component where the interface remains the same, but local binders evolve.

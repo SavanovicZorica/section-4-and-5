@@ -1,0 +1,287 @@
+\begin{theorem}\thlabel{theoremcomp} \thlabel{theorembase}[Subject
+ Reduction] 
+
+\begin{center}
+    
+    $K \Downarrow T \wedge K\xrightarrow{\textit{$\lambda$(v)}}K' \Rightarrow T\xrightarrow{\textit{$\lambda :t_b$}}T' \wedge K'\Downarrow T'$.\\
+    
+    $\lambda=x?\ |\ y!\ |\ \tau$
+    
+    
+\end{center}
+
+\end{theorem}
+
+\begin{proof}(sketch) Proof by induction on the derivation of $K\xrightarrow{\text{$\lambda (v)$}} K'$. \\
+
+
+\begin{itemize}
+
+\item [{[InpBase]}] If $[\tilde{x}>\tilde{y}]\{L\}\xrightarrow{\text{x?(v)}}[\tilde{x}>\tilde{y}]\{L'\}$,  we know that then $x\in\tilde{x}$ and that $L\xrightarrow{x?(v)}L'$, so the \thref{prop1} holds. Since $x\in\tilde{x}$, $T$ may also evolve $T\inx T'$. According to \thref{tinputevol} $\C\inx \C'$, so \thref{prop3} holds. By the definition of the type extraction we can conclude that the component $K'$ has the type $T'$, so $K'\Downarrow T'$. \\
+
+\item [{[OutBase]}] If $[\tilde{x}>\tilde{y}]\{L\}\xrightarrow{\text{y!(v)}}[\tilde{x}>\tilde{y}]\{L'\}$, we know that then $y\in\tilde{y}$ and that $L\xrightarrow{y!(v)}L'$, so the \thref{prop2} holds. Since $y\in\tilde{y}$, $T$ may also evolve $T\outy T'$ (\thref{toutputevol}). By the definition of the type extraction we can conclude that the component $K'$ has the type $T'$, so $K'\Downarrow T'$.\\
+
+\end{itemize}
+
+
+
+
+
+    
+%\fbox{\begin{minipage}{\textwidth}
+
+%Let $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}$ be the composite component of the type  $T=\{\tilde{x};\C\}$. By induction hypothesis $\exists T_r$ such that $\overline{K}\Downarrow T_r$. Let $T_r=\{\tilde{z};\C_r\}$ and $LP=G\downharpoonright_r$. 
+
+%\end{minipage}}
+%\vspace{0.5cm}
+
+ 
+
+
+\begin{itemize} 
+\item [{[InpComp]}]
+$K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{x?(v)}} K'=[\tilde{x}>\tilde{y}]\{G;r=\overline{K'},R;D;r[F]\}$, then by inversion we know that $x\in \tilde{x} \wedge \overline{K}\xrightarrow{z?(v)}\overline{K'} \wedge F=z\leftarrow x,F'$. Since $K$ is well typed, Let $G\downharpoonright_r=LP$ all its subcomponents are also well typed, so $\overline{K}\Downarrow T_r$. By induction hypothesis we have that $T_r\xrightarrow{\text{$z?:t_b$}} T_r' \wedge \overline{K'}\Downarrow T_r'$. Since $x\in \tilde{x} \Rightarrow \exists T': T\inx T'$. Global protocol $G$ remained the same and $x\in E_x(F)$, so all the components remained conformant to their local protocol after the evolution, so we only need to prove that $T'=ren(F,T'(T_r',LP,F))$.\\
+
+ \end{itemize}
+
+Using \thref{constind}, we can analyze the list of the constraints.\\ 
+
+
+
+
+\underline{Let $T_r=\{\widetilde{z:{t^1}_b};\C_r\},F=y\leftarrow \overline{y},F'\Rightarrow \overline{y}\in E_y(F), G\downharpoonright_r=LP$ and $\C_r=[\overline{y}:t_b]:\B_r:[\D_r],\C_{r_1}$, then:}
+
+\begin{itemize}
+
+\item If $\C=[y:t_b]:\B:[\D],\C' \wedge x\notin dom(\D) \Rightarrow \neg \exists M\ |\  [z:t_b']:M \in \D(\overline{y},\C_r,LP,F)$, that means, since the protocol did not evolve, that\\
+
+
+$[\overline{y}:t_b]:\B_r:[\D_r]\xrightarrow{\text{$x?:t_b'$}} [\overline{y}:t_b]:\B_r:[\D_r]\Rightarrow $
+
+$[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[\D(\overline{y},\C_r,LP,F)]\xrightarrow{\text{$z?:t_b'$}}[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[\D(\overline{y},\C_r,LP,F)]$. By the semantics rules we know:
+
+$[y:t_b]:\B:[\D]\xrightarrow{\text{$x?:t_b$}} [y:t_b]:\B:[\D]. $\\
+
+
+\item If $\C=[y:t_b]:\B:[[x:t_b']:N,\D],\C' \Rightarrow   [z:t_b']:N \in \D(\overline{y},\C_r,LP,F)$. Knowing how to extract the type, we have two cases:
+
+
+\begin{enumerate}
+\item $[z:t_b']:N\in \ddr \wedge C_r=[\overline{y}:t_b]:\B_r:[[z:t_b']:N',D'],C_r'  $: \\ 
+
+$[\overline{y}:t_b]:\B_r:[[z:t_b']:N,\D']\xrightarrow{\text{z?}} [\overline{y}:t_b]:\B_r:[[z:t_b']:N+1,\D'] \Rightarrow$
+
+$[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[[x:t_b']:N,\D'(\overline{y},\C_r,LP,F)] \xrightarrow{\text{$z?:t_b'$}}[\overline{y}:t_b]:\B(\overline{y},LP,C_r):[[x:t_b']:N+1,D'(\overline{y},C_r,LP,F)]$\\
+
+\item $ [z:t_b']:N \in \dtr \Rightarrow \exists y',z'\in \fp(LP): C_r=[\overline{y}:t_b]:\B_r:[[z':t_b'']:N',D'],[y':{t^2}_b]:\B'':[[z:t_b']:N'',D''],C_r' \wedge y'\diamond_5 z'$. So, $\FN(\overline{y},z,C_r,LP,F)=N'+N''+\vf(y',z')$ Then:\\
+
+$C_r=[\overline{y}:t_b]:\B_r:[[z':t_b'']:N',\D'],[y':{t^2}_b]:\B'':[[z:t_b']:N'',\D''],\C_{r_1}\xrightarrow{\text{z?}}[\overline{y}:t_b]:\B':[[z':t_b'']:N'+1,\D'],[y':{t^2}_b]:\B'':[[z:t_b']:N'',\D''],\C_{r_1}'= \C_r' \Rightarrow$
+
+$[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[[x:t_b']:N,\D'(\overline{y},\C_r,LP,F)] \xrightarrow{\text{$z?:t_b'$}}[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[[x:t_b']:N+1,\D'(\overline{y},\C_r,LP,F)]$, since $\FN(\overline{y},z,\C_r',LP,F)=N'+1+N''+\vf(y',z')=\FN(\overline{y},z,\C_r',LP,F)=(N'+N''+\vf(y',z'))+1$
+
+
+
+
+
+
+\end{enumerate}
+
+Following the type semantics we know that:
+
+$[y:t_b]:\B:[[x:t_b']:N,\D]\inxp [y:t_b]:\B:[[x:t_b']:N+1,\D]$.\\
+
+
+\item If $\C=[y:t_b]:\B:[[x:t_b']:\ic,\D],\C'$ then if:
+
+\begin{enumerate}
+
+\item $[z:t_b']:\ic \in \ddr \wedge [z:t_b']:\ic \notin \dtr\Rightarrow$
+
+$[\overline{y}:t_b]:\B_r:[[z:t_b']:\ic,\D'] \xrightarrow{\text{$z?:t_b'$}} [\overline{y}:t_b]:\B_r:[\D']$\\
+
+\item $[z:t_b']:\ic \in \dtr$ then:
+
+$\exists y',z'\in \fp(LP): \C_r=[\overline{y}:t_b]:\B':[[z':_b'']:N',\D'],[y':{t^2}_b]:\B'':[[z:t_b']:N'',D''],\C_{r_1} \wedge (y'\rel^{LP}_2 z' \lor y'\rel^{LP}_3 z' \lor ((M\neq \piv \lor M'\neq \piv)\wedge y'\rel^{LP}_5 z' \wedge \vf(z',y')=0))$.\\
+
+$(\C_r=[\overline{y}:t_b]:\B_r:[[z':t_b'']:M',\D'],[y':{^2}t_b]:\B'':[[z:t_b']:0,\D''],\C_{r_1} \xrightarrow{\text{z?}} \C_r'=[\overline{y}:t_b]:\B_r:[[z':t_b'']:M',\D'],[y':{t^2}_b]:\B'':[[z:t_b']:1,\D''],\C_{r_1}')\lor (\C_r=[\overline{y}:t_b]:\B_r:[[z':t_b'']:M',\D'],[y':{t^2}_b]:\B'':[[z:t_b']:\ic,\D''],\C_{r_1} \xrightarrow{\text{z?}} \C_r'=[\overline{y}:t_b]:\B_r:[[z':t_b'']:M',\D'],[y':{t^2}_b]:\B'':[\D''],\C_{r_1}')\Rightarrow$
+
+$[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[[x:t_b']:\ic,\D'(\overline{y},\C_r,LP,F)] \xrightarrow{\text{$z?:t_b'$}}[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[\D'(\overline{y},\C_r,LP,F)]$\\
+
+Following the type semantics we know that:
+
+$[y:t_b]:\B:[[x:t_b']:\ic,\D]\inxp [y:t_b]:\B:[\D]$.\\
+
+\end{enumerate}
+
+\end{itemize}
+
+
+\begin{itemize}
+\item [{[OutComp]}]
+$K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{y(v)}} K'=[\tilde{x}>\tilde{y}]\{G;r=\overline{K'},R;D;r[F]\}$, then by inversion we know that $y\in \tilde{y} \wedge \overline{K}\xrightarrow{\text{$\overline{y}(v)$}}\overline{K'} \wedge F=y\leftarrow \overline{y},F'$. Since $K$ is well typed, all its subcomponents are also well typed, so $\overline{K}\Downarrow T_r$. By induction hypothesis we have that $T_r\xrightarrow{\text{$\overline{y}:t_b$}} T_r' \wedge \overline{K'}\Downarrow T_r'$. Since $y\in \tilde{y} \Rightarrow \exists T': T\inxp T'$. Global protocol $G$ remained the same and $y\in E_y(F)$, so all the components remained conformant to their local protocol after the evolution, so we only need to prove that $T'=ren(F,T'(T_r',LP,F))$.\\
+
+\end{itemize}
+
+
+\underline{Let $T_r=\{\widetilde{z:{t^z}_b};\C_r\}, F=y\leftarrow \overline{y},F'\Rightarrow \overline{y}\in E_y(F), G\downharpoonright_r=LP$ and $\C_r=[\overline{y}:t_b]:\B_r:[\D_r],\C_{r_1}$, then:}
+
+\begin{itemize}
+
+\item If $\C=[y:t_b]:\B:[\emptyset],\C'\Rightarrow \neg \exists [x:t_b']:M\ |\ [x:t_b']:M\in (\ddr \cup \dtr)\Rightarrow \neg \exists [x:t_b']:M\ |\ [x:t_b']:M\in (\D_d(\C_r',E_x(F),E_y(F),\overline{y}) \cup \D_t(\C_r',E_x(F),E_y(F),LP,\overline{y})$ where:\\
+
+ $T_r\xrightarrow{\text{$\overline{y}!:t_b$}} T_r'\Rightarrow \C_r=[\overline{y}:t_b]:\B_r:[\D_r],\C_{r_1}\xrightarrow{\text{$\overline{y}!$}} [\overline{y}:t_b]:\B_r-1:[\D_r'],\C_{r_1}=\C_r'\Rightarrow \D_r\xrightarrow{\text{!}} \D_r'\Rightarrow$\\
+
+$[\overline{y}:t_b]:\B(\overline{y},LP,\C_r):[\emptyset]\xrightarrow{\text{$\overline{y}!:t_b$}}[\overline{y}:t_b]:\B(\overline{y},LP,\C_r)-1:[\emptyset]$\\
+
+$[y:t_b]:\B:[\emptyset]\xrightarrow{\text{$y!:t_b$}}[y:t_b]:\B-1:[\emptyset]$
+
+
+
+\item If $\C=[y:t_b]:\B:[[x_1:{t^1}_b]:N_1, \dots, [x_k:{t^k}_b]:N_k,\D],\C'$ \\
+
+We know that $\{[x_1:{t^1}_b]:N_1, \dots, [x_k:{t^k}_b]:\N_k\}=\ren(\ddr \cup \dtr)$\\
+
+
+$\C_r=[\overline{y}:t_b]:\B_r:[\D_r],\C_{r_1}\xrightarrow{\text{$\overline{y}!:t_b$}}\C_r'=[\overline{y}:t_b]:\B_r-1:[\D_r'],\C_{r_1}$, where:
+
+[\thref{depreq}] $\forall x\in dom(\D_r): \D_r=[x:t_b']:N, \D_{r_1}\Rightarrow \D_r'=[x:t_b']:N-1, \D_{r_1}'$.
+
+
+\begin{itemize}
+\item If $[x_i:{t^i}_b]:N_i \in \ddr \Rightarrow$ \\
+$[x_i:{t^i}_b]:N_i-1 \in \D_d(\C_r',E_x(F),E_y(F),\overline{y})$ \\
+
+\item If $[x_i:{t^i}_b]:N_i \in \dtr \Rightarrow \exists x',y'\in \fp(LP): \C_r=[\overline{y}:t_b]:\B_r:[[x':t_b'']:N',\D'],[y':{t^n}_b]:\B':[[x_i:{t^i}_b]:N''],\C_{r_1} \wedge y'\diamond_5 x'\Rightarrow N_i=N'+N''+\vf(y',x')$
+
+$\C_r\xrightarrow{\text{$\overline{y}$}}\C_r'=[\overline{y}:t_b]:\B_r'-1:[[x':t_b'']:N'-1],[y':{t^n}_b]:\B':[[x_i:{t^i}_b]:N''],\C_{r_1}$
+
+$N'-1+N''+\vf(y',x')=N_i-1$\\
+
+$[x_i:{t^i}-b]:N_i-1 \in \D_t(\C_r',E_x(F),E_y(F),LP,\overline{y})$ 
+
+\end{itemize}
+
+
+
+Following the type semantics we know that:
+
+$\C=[y:t_b]:\B:[[x_1:{t^1}_b]:N_1, \dots, [x_k:{t^k}_b]:N_k],\C'\xrightarrow{\text{y!}}\C=[y:t_b]:\B-1:[[x_1:{t^1}_b]:N_1-1, \dots, [x_k:{t^k}_b]:N_k-1],\C'$
+
+\end{itemize}
+
+
+
+
+\begin{itemize}
+
+
+\item [{[Internal]}]
+$K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{$\tau$}} K'=[\tilde{x}>\tilde{y}]\{G;r=\overline{K'},R;D;r[F]\}$, then by inversion we know that  $\overline{K}\xrightarrow{\text{$\tau$}}\overline{K'}$. If $\overline{K}$ has a type $T_r$, by induction hypothesis we know that $T_r\xrightarrow{\text{$\tau$}}T_r \wedge \overline{K'}\Downarrow T_r$. We can conclude that each type of the subcomponents remained the same, and also the global protocol did not evolve, so these types remained conformant with their local protocol.   Since the protocol did not move, the extracted type is the one extracted again from $T_r$ and $LP$, and knowing the type semantics we know that $T\xrightarrow{\text{$\tau$}}T$. The proof is direct.\\
+
+
+
+
+\item [{[InpChor]}]
+$K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{$\tau$}} K'=[\tilde{x}>\tilde{y}]\{G';r=\overline{K'},R;D;r[F]\}$, then by inversion we know that $ \overline{K}\xrightarrow{\text{$z'?(v)$}}\overline{K'}\  \wedge \  D=r.z'\leftarrow p.u,D' \ \wedge \ G\xrightarrow{\text{$r?l<v>$}}G'$ and let $G\downharpoonright_r=LP$.\\ 
+Let $R=r_1=K_1,r_2=K_2,\dots, r_m=K_m$ and
+$\overline{K}\Downarrow T_r,\ K_1\Downarrow T_1,\ \dots,\  K_m\Downarrow T_m$.
+
+$K\Downarrow T\Rightarrow\itype(T_r)\bowtie x?:t_b'.G'\downharpoonright_{r}=LP, T_1\bowtie G\downharpoonright_{r_1},\dots, T_m \bowtie G\downharpoonright_{r_m}$.
+
+Since $x$ is the port of the component $\overline{K}$, $G\downharpoonright{r_i}=G'\downharpoonright{r_i}, i=1,2,\dots, m.$
+
+We can conclude that due to the semantics of the (modified) type that   $\itype(T_r)\xrightarrow{\text{$z'?:t_b'$}}\itype'(T_r), T_1\xrightarrow{\text{$z'?:t_b'$}}T_1,\dots, T_m\xrightarrow{\text{$z'?:t_b$}}T_m$.
+
+$[InpConf]$: $\itype'(T_r)\bowtie G'\downharpoonright_{r}, T_1\bowtie G'\downharpoonright_{r_1}\dots, T_m\bowtie G'\downharpoonright_{r_m}$. \\
+
+Let's prove that $T\xrightarrow{\text{$\tau$}}T$.
+
+
+
+By induction hypothesis $T_r\xrightarrow{\text{$z'?:t_b'$}} T_r' \wedge \overline{K'}\Downarrow T_r'$. Since $z'\in \fp(LP)$ we need to consider the following cases: \\
+
+
+\begin{enumerate}
+
+\item $\exists y'\in \fp(LP), z \in E_x(F),\overline{y}\in E_y(F)|   \C_r=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:M',\D'],[y':t_b'']:\B':[[z:{t^2}_b]:M'',\D''],\C_r \wedge [z:{t^2}_b]:M_1 \in \dtr$
+
+\item $\neg \exists y'\in \fp(LP), z \in E_x(F),\overline{y}\in E_y(F)|   \C_r=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:M',\D'],[y':t_b'']:\B':[[z:{t^2}_b]:M'',\D''],\C_{r_1} \wedge [z:{t^2}_b]:N_1 \in \dtr$
+
+
+
+\end{enumerate}
+
+For the case 2 we have already seen that it does not change any transitive dependencies, so the extracted  type remains the same as expected.\\
+
+
+For the case 1 we are considering the only possible case of having the dependency in the case where $LP=z'?:t_b'.LP'$ :\\ $\C_r=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:N',\D'],[y':t_b'']:\B':[[z:{t^2}_b]:N'',\D''],\C_{r_1 }\wedge y' \rel^{LP}_5 z'.$ \\
+
+Since $LP=z'?:t_b'.LP'\Rightarrow \vf(y',z')=1$, so $\FN(z,\overline{y},\C_r,LP,F)=N'+N''+1$.\\
+
+$\C_r\xrightarrow{\text{$z'?:t_b'$}}\C_r'=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:N'+1,\D'],[y':t_b'']:\B':[[z:{t^2}_b]:N'',\D''],\C_{r_1 }$, but then $\vf(y',z')=0$.\\
+
+So, $\FN(z,\overline{y},\C_r',LP',F)=N'+1+N''+0$.\\
+
+We can conclude that dependencies did not change and that extracted type evolved to itself. So, we can finally conclude that $K'\Downarrow T$
+
+
+\item [{[OutChor]}]
+$K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{$\tau$}} K'=[\tilde{x}>\tilde{y}]\{G';r=\overline{K'},R;D;r[F]\}$, then by inversion we know that $ \overline{K}\xrightarrow{\text{$y'!(v)$}}\overline{K'}\  \wedge \  D=p.u\leftarrow r.y',D' \ \wedge \ G\xrightarrow{\text{$r!l<v>$}}G'$ and let $G\downharpoonright_r=LP$.\\
+
+Let $R=r_1=K_1,r_2=K_2,\dots, r_m=K_m$ and
+$\overline{K}\Downarrow T_r, K_1\Downarrow T_1,\dots, K_m\Downarrow T_m$.
+
+$K\Downarrow T\Rightarrow\itype(T_r)\bowtie y'!:t_b''.G'\downharpoonright_{r}, T_1\bowtie G\downharpoonright_{r_1},\dots, T_m \bowtie G\downharpoonright_{r_m}$.
+
+Since $y'$ is the port of the component $\overline{K}$, $G\downharpoonright{r_i}=G'\downharpoonright{r_i}, i=1,2,\dots, m.$
+
+We can conclude that due to the semantic of the (modified) type that   $\itype(T_r)\xrightarrow{\text{$y'!:t_b''$}}\itype'(T_r), T_1\xrightarrow{\text{$y'!:t_b''$}}T_1,\dots, T_m\xrightarrow{\text{$y'!:t_b''$}}T_m$.
+
+$[OutConf]$: $\itype'(T_r)\bowtie G'\downharpoonright_{r}, T_1\bowtie G'\downharpoonright_{r_1}\dots, T_m\bowtie G'\downharpoonright_{r_m}$. \\
+
+Let's prove that $T\xrightarrow{\text{$\tau$}}T$. 
+
+
+
+
+
+
+
+
+
+By induction hypothesis: $T_r\xrightarrow{\text{$y'!:t_b''$}} T_r' \wedge \overline{K'}\Downarrow T_r'$. Since $y'\in \fp(LP)$ and knowing that $\overline{K}$ can do an output on $y'$, the only possible case of having the dependencies is: \\
+
+$\exists z'\in \fp(LP), z \in E_x(F),\overline{y}\in E_y(F)|   \C_r=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:M,\D'],[y':t_b'']:\B':[[z:{t^2}_b]:M',\D''],\C_r \wedge [z:{t^2}_b]:M_1 \in \dtr$.
+
+So, $LP=y'!:t_b''.LP'\Rightarrow \vf(y',z')=0$, so $\FN(z,\overline{y},\C_r,LP,F)=N'+N''+0$.\\
+
+$\C_r\xrightarrow{\text{$y'!:t_b''$}}\C_r'=[\overline{y}:{t^1}_b]:\B_r:[[z':t_b']:N'-1,\D'],[y':t_b'']:\B':[[z:{t^2}_b]:N'',\D''],\C_{r_1 }$, but then $\vf(y',z')=1$.\\
+
+So, $\FN(z,\overline{y},\C_r',LP',F)=N'-1+N''+1$.\\
+
+
+So, we can conclude that dependencies did not change and that extracted type evolved to itself.
+
+
+
+
+
+\end{itemize}
+
+Using the type semantics we know that $T\xrightarrow{\text{$\tau$}}T$, so the proof is direct.
+
+
+
+
+
+
+
+
+
+
+
+\end{proof}
+
+
+
+

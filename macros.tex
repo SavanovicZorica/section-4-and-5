@@ -1,0 +1,161 @@
+
+%newcommands and macros (mine)
+
+\newcommand{\portal}{$\mathbf{Portal}$}
+\newcommand{\storage}{$\mathbf{Storage}$}
+\newcommand{\re}{$\mathbf{RE}$}
+\newcommand{\girc}{$\mathbf{G_{IRC}}$}
+
+
+
+\newcommand{\example}{\textit{Example: }}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{convention}{Convention}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{prop}{Property}
+\renewcommand{\figurename}{Figure}
+\newcommand{\op}{\textbf{inc}}
+\newcommand{\B}{\textbf{B}}%boundaries
+\newcommand{\ren}{\textbf{ren}}
+\newcommand{\C}{\textbf{C}}%constraints
+\newcommand{\D}{\textbf{D}}%dependencies
+\newcommand{\context}{\mathcal{C}}
+\newcommand{\transitive}{\overset{*}{<}}
+\newcommand{\elem}{\textbf{elements}}
+%commands for composite components
+\newcommand{\bc}{\overset{*}{K}}
+\newcommand{\of}{\textbf{$F_0$}}%ordering_function
+\newcommand{\dc}{F_{dc}}%dependency_couples
+\newcommand{\tdi}{F_{tdi}}%trans_dep_input
+\newcommand{\td}{F_{td}}%transitive dep.
+\newcommand{\bnd}{F_{bnd}}%boundaries_composite
+\newcommand{\dpc}{F_{dp}}%depen_compos
+\newcommand{\rep}{rep}%repetative_part
+\newcommand{\fp}{fp}%body_of_rec
+\newcommand{\vf}{\textbf{vf}}
+\newcommand{\W}{\textbf{W}}
+\newcommand{\rel}{\diamond}
+\newcommand{\pr}{\textbf{pr}}
+\newcommand{\A}{\textbf{A}}
+\newcommand{\itype}{\mathcal{T}}
+\newcommand{\iD}{\mathcal{D}  }
+\newcommand{\iC}{\mathcal{C}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\iN}{\mathcal{N}}
+
+\newcommand{\inx}{\xrightarrow{\text{$\depen{x?}{t_b}$}}}
+\newcommand{\outy}{\xrightarrow{\text{$\depen{y!}{t_b}$}}}
+\newcommand{\outyone}{\xrightarrow{\text{$\depen{y!}{{t^1}_b}$}}}
+
+\newcommand{\inxp}{\xrightarrow{\text{$\depen{x?}{t_b'}$}}}
+\newcommand{\inputx}{\xrightarrow{\text{$x?$}}}
+
+\renewcommand{\delta}{\sigma}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ \newcommand{\piv}{\Psi}
+ \newcommand{\ic}{\Omega}
+ \newcommand{\stl}{\textbf{list}}
+ \newcommand{\fn}{\textbf{\textit{val}}(x,y,\C,LP,F)}
+ \newcommand{\dt}{\D_t(\C,E_x(F),E_y(F),LP,y)}
+ \newcommand{\dd}{\D_d(\C,E_x(F),E_y(F),y)}
+ \newcommand{\FN}{\textbf{\textit{val}}}
+  \newcommand{\dtr}{\D_t(\C_r,E_x(F),E_y(F),LP,\overline{y})}
+ \newcommand{\ddr}{\D_d(\C_r,E_x(F),E_y(F),\overline{y})}
+
+\newcommand{\fig}{\textbf{Figure} \ref}
+
+
+
+
+\newcommand{\pev}[2]{#1:#2}
+\newcommand{\ind}[1]{#1:\Omega}
+\newcommand{\T}{T}
+
+\newcommand{\types}[2]{\{\widetilde{#1};#2\}}
+\newcommand{\constr}[4]{\depen{#1}{#2}:#3:[#4]}
+\newcommand{\depen}[2]{#1(#2)}
+
+
+%Hugo's macros
+
+%% GENERAL %%
+
+\newcommand{\pp}{\ |\ }
+\newcommand{\m}[1]{\mathsf{#1}}
+
+\newcommand{\subst}[2]{\{{}^{#1}\! / \!{}_{#2}\}}
+\newcommand{\lto}[1]{\ \mathrel{\stackrel{{\;\;#1\;\;}}{\mbox{\rightarrowfill}}}\ }
+\newcommand{\eval}{\downarrow}
+\newcommand{\dom}{\m{dom}}
+
+%% GC SYNTAX %%
+
+\newcommand{\inl}{{\mathtt{inl}}}
+\newcommand{\inr}{{\mathtt{inr}}}
+
+\newcommand{\interface}[2]{[{#1}\,\rangle\,{#2}]}
+\newcommand{\chorboxb}[3]{\interface{#1}{#2} \{ #3 \}}
+\newcommand{\chorbox}[6]{\interface{#1}{#2} \{ #6; #5; #3; #4\}}
+
+\newcommand{\lbinderp}[2] {   {#1} = {#2}}
+
+\newcommand{\role}[1]{\mathsf{#1}}
+
+%% PROTOCOL SYNTAX %%
+
+\newcommand{\gcom}[3]{\role{#1}\!\!\!\lto{#2}\!\!\!\role{#3}}
+\newcommand{\gchoice}[5]{\role{#1}\!\!\!\lto{#2}\!\!\!\role{#3}(#4,#5)}
+\newcommand{\recvar}[1]{\mathbf{#1}}
+\newcommand{\gend}{\mathbf{end}}
+
+\newcommand{\lab}{\ell}
+\newcommand{\gval}[2]{#1,#2}
+\newcommand{\labout}[3]{#1!#2\langle#3\rangle}
+\newcommand{\labinp}[3]{#1?#2\langle#3\rangle}
+
+\newcommand{\roleport}[2]{\role{#1}.{#2}}
+\newcommand{\roleas}[2]{\role{#1}\!=\!#2}
+
+%% BINDER SYNTAX %%
+
+\newcommand{\lfrom}[1]{\mathrel{\stackrel{{\;\;#1\;\;}}{\mbox{\leftarrowfill}}}}
+\newcommand{\dbinder}[4] {   \role{#2}.{#3}\lfrom{#1} {#4} }
+\newcommand{\lbinder}[3] {   {#1} \,=\, {#3}\,\langle\,{#2} }
+\newcommand{\fbinder}[2]{ #1\leftarrow #2 }
+
+
+%% TYPE SYNTAX?? %%
+
+\newcommand{\tout}[3]{#1!#2. #3}
+\newcommand{\tinp}[3]{#1?#2. #3}
+\newcommand{\tchoice}[3]{#1 \oplus (#2, #3)}
+\newcommand{\tbranch}[3]{#1\, \& (#2, #3)}
+\newcommand{\tend}{\gend}
+
+\newcommand{\chot}{{\mathtt{ChoT}}}
+
+%% TYPE OPERATIONS %%
+
+\newcommand{\projc}[4]{#1\! \downarrow_{#2,#3,#4}}
+\newcommand{\labenv}{\Delta}
+
+\makeatletter
+%\newcommand{\xleftrightarrow}[2][]{\ext@arrow 3359\leftrightarrowfill@{#1}{#2}}
+\newcommand{\xdashrightarrow}[2][]{\ext@arrow 0359\rightarrowfill@@{#1}{#2}}
+\newcommand{\xdashleftarrow}[2][]{\ext@arrow 3095\leftarrowfill@@{#1}{#2}}
+\newcommand{\xdashleftrightarrow}[2][]{\ext@arrow 3359\leftrightarrowfill@@{#1}{#2}}
+\def\rightarrowfill@@{\arrowfill@@\relax\relbar\rightarrow}
+\def\leftarrowfill@@{\arrowfill@@\leftarrow\relbar\relax}
+\def\leftrightarrowfill@@{\arrowfill@@\leftarrow\relbar\rightarrow}
+\def\arrowfill@@#1#2#3#4{%
+  $\m@th\thickmuskip0mu\medmuskip\thickmuskip\thinmuskip\thickmuskip
+   \relax#4#1
+   \xleaders\hbox{$#4#2$}\hfill
+   #3$%
+}
+\makeatother

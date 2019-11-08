@@ -1,0 +1,246 @@
+
+\section{Modified Type - $\itype$}
+
+Now we introduce the modified type that we name as a $\itype$-type. Since we need our components to be well-typed, for the composite components it is not enough just extract the type, it is also necessary to ensure that each inner component will ``play'' its role prescribed by the protocol. The inner component of the composite component, beside its interaction with other components, is also interacting with an external environment. In this case the crucial part is that it is able to receive in any moment the values that are input externally. For the purpose of observing if the type of the component can do the actions required by the protocol, we need to modify the type according to the possible inputs that the component can receive without any constraints. The syntax of the $\itype$-type is given in the Table \ref{tab:modsyntax}. It is similar as a syntax of the types which we have already shown, with the difference in the number of values received, that in the modified type can be unbounded (infinite).  Moreover, the rules defining the semantics of modiefied type are the same as the ones displayed in the Table \ref{tab:input_semantics} and Table \ref{tab:output_semantics}.
+
+
+
+
+
+
+
+\textbf{$\itype$-Type syntax}
+\vspace{0.5cm}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{l}
+   
+
+$\itype::=\{\widetilde{x:t_b}; \iC \}$\\
+
+$\iC::=[y:t_b]:\B:[\iD] \ |\ \emptyset \ |\ \iC_1,\iC_2$\\
+
+$\iD::=[x:t_b]:\M \ |\ \emptyset \ |\ \iD_1,\iD_2$\\
+
+$\B::=N\ |\  \infty$\\
+
+$N\in\N_0$\\
+
+$\M::=\iN\ |\ \ic$\\
+
+$\iN::= N \ |\  \infty$\\
+
+$[x:t_b]:\iN$-`per each value'\\
+
+$[x:t_b]:\ic$-`initial condition'\\
+
+\end{tabular}
+\end{center}
+\caption {$\itype$-Type syntax} \label{tab:modsyntax}
+\end{table}
+\vspace{1cm}
+
+\begin{convention}\thlabel{sin2} For every $\iD$ and every $\iC$ the following holds:
+
+\begin{itemize}
+\item {[Shuffle $\iD$]}: $\iD_1,\iD_2\equiv\iD_2,\iD_1$
+\item {[Shuffle $\iC$]}: $\iC_1,\iC_2\equiv\iC_2,\iC_1$
+\item {[Empty Concatenation $\iD$]}:
+$\iD,\emptyset\equiv\emptyset,\iD\equiv\iD$
+\item {[Empty Concatenation $\iC$]}: $\iC,\emptyset\equiv\emptyset,\iC\equiv\iC$
+\end{itemize}
+\end{convention}
+
+
+
+
+
+
+
+
+\textbf{$\itype$-Type semantics}
+\vspace{0.5cm}
+
+\begin{table}[H]
+
+
+
+\begin{center}
+
+
+$\begin{tabular}{c c}
+
+ \infer [{[iT1]}]{\iC_1,\iC_2\xrightarrow{\text{$x?:t_b$}}\iC_1',\iC_2'}{\iC_1\xrightarrow{\text{$x?:t_b$}}\iC_1' & \iC_2\xrightarrow{\text{$x?:t_b$}}\iC_2'} & \infer[{[iT2]}]{\{\widetilde{x:t_b'};\iC\}\xrightarrow{\text{$x?:t_b$}}\{\widetilde{x:t_b'};\iC'\}}{\iC\xrightarrow{\text{$x?:t_b$}}\iC' & x:t_b\in\widetilde{x:t_b'}} \\ 
+& \\
+
+\infer [{[iT3]}]{\{\widetilde{x:t_b'};\emptyset\}\xrightarrow{\text{$x?:t_b$}}\{\widetilde{x:t_b'};\emptyset\}}{x:t_b\in\widetilde{x:t_b'}}
+
+&  \infer[{[iT4]}]{[y:t_b']:\B:[\iD]\xrightarrow{\text{$x?:t_b$}}[y:t_b':\B:[\iD]}{x\notin dom[\iD]}\\
+ 
+& \\
+\multicolumn{2}{c}{ \infer[{[iT5]}]{[y:t_b']:\B:[[x:t_b]:\ic,\iD]\xrightarrow{\text{$x?:t_b$}}[y:t_b']:\B:[\iD]}{}}\\
+
+&  \\
+
+\multicolumn{2}{c}{ \infer[[{iT6]}]{[y:t_b']:\B:[[x:t_b:\iN,\iD]\xrightarrow{\text{$x?:t_b$}}[[y:t_b']:\B:[[x:t_b]:\iN+1,\iD]}{}}\\
+
+& \\
+
+
+
+
+
+ \end{tabular}$
+
+
+
+\end{center}
+\caption {Input-semantics of $\itype$-types} \label{tab:modinput}
+\end{table}
+
+\vspace{1cm}
+\begin{table}[H]
+
+\begin{center}
+    
+$\begin{tabular}{c c}
+
+ \infer [{[iT7]}]{\iD_1,\iD_2\xrightarrow{\text{!}}\iD_1',\iD_2'}{\iD_1\xrightarrow{\text{!}}\iD_1' & \iD_2\xrightarrow{\text{!}}\iD_2'} &
+ 
+ \infer[{[iT8]}]{\{\widetilde{x:t_b'};[y:t_b:\B:[\iD],\iC'\}\xrightarrow{\text{$y!:t_b$}}\{\widetilde{x:t_b'};[y:t_b]:\B-1:[\iD'],\iC'\}}{\iD\xrightarrow{\text{!}}\iD' & \B>0}\\
+ 
+& \\
+
+\multicolumn{2}{c}{\infer [{[iT9]}]{\{\widetilde{x:t_b'};[y:t_b]:\B:[\emptyset],\iC\}\xrightarrow{\text{$y!:t_b$}}\{\widetilde{x:t_b'};[y:t_b]:\B-1:[\emptyset],\iC\}}{\B>0}} \\
+
+& \\
+
+
+   \infer[{[iT10]}]{[x:t_b]:\iN\xrightarrow{\text{!}}[x:t_b]:\iN-1}{ \iN\geq 1 } &
+ 
+\infer[{[iT11]}]{\itype\xrightarrow{\text{$\lambda$}}\itype}{}\\
+
+& \\
+
+ \end{tabular}$
+
+
+
+\end{center}
+\caption {Output-semantics of $\itype$-types} \label{tab:modoutput}
+\end{table}
+
+
+
+\begin{definition}  $\itype' \leq \itype $  if there is a (possibly empty) set of input ports $\{x_1,x_2, \dots, x_k\}$ such that $\itype'\xrightarrow{\text{$x_1?:{t^1}_b$}}\cdots\xrightarrow{\text{$x_k?:{t^k}_b$}}\itype$.
+
+\end{definition}
+
+\vspace{0.5cm}
+
+
+
+\begin{definition}
+If $T_r=\{\widetilde{x:t_b};\C\}$ is a type of the subcomponent $\overline{K}$ of the composite component $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}$ and $E_x(F)=\{x|\exists w: F=w\leftarrow x,F'\}$  then $\itype(T_r)$ is the $T_r$-modified type where:\\
+\begin{itemize}
+    \item $\itype(T_r)=\{\widetilde{x:t_b};\iC(T_r)\}$
+    \item $\iC(T_r)=\stl(\{[y:t_b]:\B:[\iD(T_r,y)]|\C=[y:t_b]:\B[\D(y)],\C'\})$
+    \item $\iD(T_r,y)=\stl ($ $\{[x:t_b]:M|\D(y)=[x:t_b]:M,\D'(y) \wedge x\notin E_x(F)\}\cup$  
+    
+ \hspace{2.7cm} $\{[x:t_b]:\infty|\D(y)=[x:t_b]:N,\D'(y) \wedge x\in E_x(F)\}\cup$
+ 
+  \hspace{2.7cm} $ \{\emptyset|\D(y)=[x:t_b]:\ic,\D'(y)\wedge x\in E_x(F)\}\ )$
+          
+           
+       
+  
+    
+   
+\end{itemize}
+
+
+\textcolor{red}{NOTE:} If $K=[\tilde{x}>\tilde{y}]\{G,r_1=K_1,r_2=K_2,\dots,r_n=K_n;D;r_1[F]\}$ then $\itype(T_{r_2})=T_{r_2},\dots, \itype(T_{r_k})=T_{r_k}$, since the only component that forwards the values from/to external environment is the component $K_1$
+
+
+
+\end{definition}
+\vspace{0.5cm}
+
+\textbf{Conformance}
+
+Each internal component of the composite component has its local protocol defined. We need to ensure that there is no mismatch between the type of values received/sent to/from the component, with the values that protocol gives us. The conformance serves for the purpose of taking care of types ability to carry out the protocol. In the Table \ref{tab:conformance} we define the rules for the conformance relation denoted as $\bowtie$. Rule [$InpConf$] ensures that modified type $\itype$ is conformant with the protocol, where it can receive an input of a matching type with a continuation as a protocol $LP$, if a modified type can receive a value on the port $x$, and assuming that the port $x$ receives a values of the type $t_b$ and the evolved type is conformant with $LP$. Similar reasoning is for an output. Rule [$EndConf$]...
+
+
+
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{c c}
+       \infer[{[InpConf]}]{\Gamma \vdash \itype \bowtie x?:t_b.LP}{\itype \inx \itype' & \Gamma \vdash \itype' \bowtie LP}  &  \infer[{[OutConf]}]{\Gamma \vdash \itype \bowtie y!:t_b.LP}{\itype \outy \itype' & \Gamma \vdash \itype' \bowtie LP}\\
+       
+       & \\
+       
+        \infer[{[EndConf]}]{\Gamma \vdash \itype \bowtie end}{}  &  \infer[{[VarConf]}]{\Gamma,X:\itype' \vdash \itype \bowtie X}{\itype'\leq \itype}\\
+       
+       & \\
+       
+     \multicolumn{2}{c}{\infer[{[RecConf]}]{\Gamma \vdash \itype \bowtie recX.LP}{\Gamma,X:\itype \vdash \itype \bowtie LP}} \\ 
+     & \\
+         
+    \end{tabular}
+    
+    \caption{Conformance}
+    \label{tab:conformance}
+\end{table}
+
+\vspace{0.5cm}
+
+\begin{definition} We say that $K$ is well typed, denoted by $K\Downarrow T$ and defined as follows: 
+
+\begin{itemize}
+
+
+\item \underline{$K$ is a base component:}\\
+
+We say that $K\Downarrow T$ if $T$ is the extracted type.
+
+
+\item \underline{$K$ is a composite component:}
+
+Let $K=[\tilde{x}>\tilde{y}]\{G;r_1=K_1, \dots, r_k=K_k;D;r[F]\}$ and $LP=G\downharpoonright_r$. If:
+\begin{itemize}
+
+\item $K_i\Downarrow T_{r_i}, i=1,2,\dots,k$. \item 
+ $T$ is extracted type from $T_{r_1}$ and $LP$
+ 
+ \item $\itype(T_{r_1})\bowtie G\downharpoonright_{r_1}, T_{r_2}\bowtie G\downharpoonright_{r_2},\dots,T_{r_k}\bowtie G\downharpoonright_{r_k}$. 
+ \end{itemize}
+Then $K\Downarrow T$.
+
+\end{itemize}
+\end{definition}
+
+
+
+
+
+
+
+\vspace{0.5cm}
+\begin{proposition}\thlabel{depreq} [Dependencies requirement] Let $T=\{\widetilde{x:t_b'};\C_1,\C_2, \dots, \C_k\}$ and $\C_i=[y_i:t_b]:\B_i:[\D_i]$. Then if  $T\xrightarrow{\text{$y_i:t_b$}}T' \Rightarrow \B_i>0 \wedge \forall x \in dom(\D_i): \D_i=[x:t_b'']:N,\D_i' \wedge N>0. $
+
+
+
+
+\end{proposition}
+
+
+
+
+
+\begin{proposition}\thlabel{constind} [Constraint independency] If $K\Downarrow T=\{\widetilde{x:t_b};\C_1,\dots, C_k\}$ then $K(y_i)\Downarrow \{\widetilde{x:t_b};\C_i\}$ where $i=1,2, \dots, k$ and  $K(y_i)$ is the component $K$ restricted to the one output port-port $y_i$.
+
+
+\end{proposition}

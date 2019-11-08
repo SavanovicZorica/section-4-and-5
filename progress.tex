@@ -1,0 +1,243 @@
+\begin{definition}
+   
+   $K\xRightarrow{\textit{$\lambda$(v)}}K'\overset{\triangle}{=}K\rightarrow \overset{\tau}{\cdots}K''\xrightarrow{\text{$\lambda$(v)}}K'''\rightarrow \overset{\tau}{\cdots} K'$  
+
+\end{definition}
+
+
+
+
+\begin{theorem}\thlabel{progressbase}\thlabel{progresscomp} [Progress] 
+
+\begin{center}
+    
+    $K \Downarrow T \wedge T\xrightarrow{\textit{$\lambda:t_b$}}T' \Rightarrow K\xRightarrow{\textit{$\lambda$(v)}}K' \wedge K'\Downarrow T'$. $\ \ \ \ \ \ \ \ $ [*]\\
+    
+    $\lambda=x?\ |\ y!$\\
+ 
+    
+    
+\end{center}
+
+\end{theorem}
+
+\begin{proof} (Sketch) Proof by induction on the structure of $K$.\\
+
+\underline{\textit{Base case.}} Let $K$ be the base component.
+If $K$ is a base component of the type $T$ then:
+
+(Proof for the base case by induction on the derivation of $T\xrightarrow{\text{$\lambda:t_b$}}T'$.)
+
+
+\begin{itemize}
+    \item [{[T2]}]: $\{\widetilde{x:{t^i}_b};\C\}\inx \{\widetilde{x:{t^i}_b};\C'\}$, then by inversion we know that $x:t_b\in \widetilde{x:{t^i}_b} \wedge \C\inx \C'$. Since $x:t_b\in \widetilde{x:{t^i}_b}\Rightarrow \exists K' \ |\ K\xrightarrow{\text{x?(v)}}K'$ ($v$ is some value of the type $t_b$).  We need to prove that $K'\Downarrow T'$.
+    
+    \begin{itemize}
+        \item {[\thref{prop3}]} $\C\inx \C'=\op(\C,x)$, So $T'=\{\tilde{x},\op(\C,x)\}$ 
+        
+        \item {[Type semantics]} $T'$ is unique.
+        
+        \item So, $K\xrightarrow{\text{x?(v)}} \wedge K\Downarrow T$
+        
+            \item Using [\thref{theorembase}] we know that then $K'\Downarrow T'$.
+    \end{itemize}
+    \end{itemize}
+    
+    
+  \begin{itemize}
+\item [{[T3]}]
+
+$\{\widetilde{x:{t^i}_b};\emptyset\}\inx \{\widetilde{x:{t^i}_b},\emptyset\}$, then by inversion we know that $x:t_b\in \widetilde{x:{t^i}_b} $. Since $x:t_b\in \widetilde{x:{t^i}_b}\Rightarrow \exists K' \ |\ K\xrightarrow{\text{x?(v)}}K'$. We need to prove that $K'\Downarrow T'$.\\
+
+\begin{itemize}
+ 
+    
+    \item So, $K\xrightarrow{\text{x?(v)}}K' \wedge K\Downarrow \itype$
+    \item {[Type semantics]} $T'$ is unique
+    \item {[\thref{theoremcomp}}] $K'\Downarrow T'$
+    
+    
+\end{itemize}
+
+
+\end{itemize}
+
+
+
+
+\begin{itemize}
+\item [{[T9]}]: $\{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B:[\emptyset],\C\}\outyone \{\widetilde{x:{t^1}_b};[y:{t^1}_b]:\B-1:[\emptyset],\C\}$ (where $T=\{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B:[\emptyset,\C]\}$ and $T'=\{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B-1:[\emptyset,\C]\}$). By inversion we know that $B>0$.
+    
+    If $T$ was the extracted type of the base component, the proof is straightforward. Let $K=[\tilde{x}>\tilde{y}]\{L\}$.
+    
+    
+    Since $K=[\tilde{x}>\tilde{y}]\{L\}\Downarrow \{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B:[\emptyset],\C\}\Rightarrow L=y=f()<\cdot,L'$. 
+    
+    \begin{itemize}
+        \item {[\thref{prop2}]} $L=y=f()<\cdot,L'\xrightarrow{\text{y!}(v)}L=y=f()<\cdot,L'$
+        \item {[Type extraction]} $y\in \widetilde{y}$
+        \item {[OutBase]}\\ $K=[\tilde{x}>\tilde{y}]\{L=y=f()<\cdot,L'\}\xrightarrow{\text{y!}(v)} K'=[\tilde{x}>\tilde{y}]\{L=y=f()<\cdot,L'\}$
+        \item Extracted type from $K'$ is $T$: $K'\Downarrow \{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B:[\emptyset],\C\}$
+        \item Since $\B=\infty=\infty-1\Rightarrow$
+        $K'\Downarrow \{\widetilde{x:{t^i}_b};[y:{t^1}_b]:\B-1:[\emptyset],\C\}$
+        
+        
+        
+        
+    \end{itemize}
+ 
+    
+    
+    
+   \item [{[T8]}]: $\{\widetilde{x:{t^i}_b}; [y:{t^1}_b]:\B:[\D],\C'\}\outy \{\widetilde{x:t_b};[y:{t^1}_b]:\B-1:[\D'],\C'\}$. Let $G\downharpoonright_r=LP$. By inversion we know that $\D\xrightarrow{\text{!}}\D'$ and $\B>0$. 
+   
+  Let $T$ be the type of the base component $K=[\tilde{x}>\tilde{y}]\{L\}$.
+   
+   
+   \begin{itemize}
+   
+   
+   \item {[\thref{prop4}]} $\forall x\in dom(\D)|\D=[x:t_b]:N,\D_1\Rightarrow \D'=[x:t_b]:N-1,\D_1'$, where $N>0$.
+   
+
+\item {[Type extraction]}  $\forall x\in dom(\D):y=f(\tilde{x_1})<\tilde{\delta_1},\delta_{N+1},\tilde{\delta_2}\wedge x\in \tilde{x_1} \wedge\\ (x\in\cap_{\delta_i\in\tilde{\delta_1}}dom(\delta_i) \wedge x\notin dom(\delta_{N+1})) \wedge N>0)$
+
+  \item {[Type extraction]} $y\in \tilde{y}$
+  
+  \item {[LOut]} $L_1=y=f(\tilde{x_1})<\tilde{\delta}_1,\delta_{N+1},\tilde{\delta}_2\xrightarrow{\text{y!}}y=f(\tilde{x_1})<\tilde{\delta}_1',\delta_N,\tilde{\delta}_2=L_1'$, where
+  
+   $\forall x\in \tilde{x_1}| (x\in\cap_{\delta_i\in\tilde{\delta_1'}}dom(\delta_i) \wedge x\notin dom(\delta_{N})) \wedge N\geq 0)$ in $L'$.
+  
+  
+ \item {[OutBase],[LOutLift]} $K=[\tilde{x}>\tilde{y}]\{L_1,L'\}\xrightarrow{\text{y!(v)}}K=[\tilde{x}>\tilde{y}]\{L_1',L'\}$.
+ 
+ \item By the definition of the type extraction, using type semantics and knowing that $\B=\infty=\infty-1$ we can directly conclude that $K'\Downarrow T'$.
+
+    
+         
+   \end{itemize}  
+    
+  
+
+    
+\end{itemize}
+
+
+
+
+
+
+%Since $K\Downarrow T$, then $\exists T_r: \overline{K}\Downarrow T_r$. Both [T2],[T3] indicate that $x\in \tilde{x}\Rightarrow $
+
+
+\underline{\textit{Induction hypothesis.(1)}} Let $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}$ and lets assume that [*] holds for all the components ``smaller'' that $K$ (subcomponents).
+
+\underline{\textit{Proof for $K$}.} Let $K$ be the composite component $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}$ where $K\Downarrow T$ and $T\xrightarrow{\text{$\lambda:t_b$}}T'$.\\
+Let $T=\{\widetilde{x:{t^i}_b};\C\}$. \\
+Since $K\Downarrow T$ then $\exists T_r: \overline{K}\Downarrow T_r$ and let $T_r=\{\widetilde{z:{t^i}_b};\C_r\}$.\\
+Moreover,  since $K$ is well-typed $\itype(T_r)\bowtie G\downharpoonright_r=LP$.
+
+
+\begin{itemize}
+    \item [Case 1.][$\lambda=x?$] Since $T\inx T'$ we know ([T2],[T3]) that $x:t_b\in \widetilde{x:{t^i}_b}$. By the definition of the type extraction $\exists z:t_b\in \widetilde{z:{t^i}_b}: F=z \leftarrow x, F'\Rightarrow T_r\xrightarrow{\text{$z?:t_b$}} T_r'$. By induction hypothesis $\overline{K}\xRightarrow{\text{z?(v)}}\overline{K'}$
+    [InpComp] Then $K\xRightarrow{\text{x?(v)}}K'$. Since $K\Downarrow T$ and $K\xrightarrow{\text{x?(v)}}K'$ [\thref{theoremcomp}], and knowing by the definition of the type extraction that $T'$ is unique $\Rightarrow K'\Downarrow T'$.\\
+    Note that all the components are always able to input on their input ports when values are forwarded/input from the external environment, so in this case  $\overline{K}\xRightarrow{\text{z?(v)}}\overline{K'}=\overline{K}\xrightarrow{\text{z?(v)}}\overline{K'}$ and $K\xRightarrow{\text{x?(v)}}K'= K\xrightarrow{\text{x?(v)}}K'.$
+    
+    
+    
+    
+  
+    
+     \item [Case 2.][$\lambda=y!$] Since $K\Downarrow T$ and $T\outy T'$ we know by the definition of the type extraction that $\exists \overline{y}: F=y\leftarrow \overline{y},F'$. \\
+     
+     We have two possible cases:
+     
+     \begin{itemize}
+         \item [1] $T_r\xrightarrow{\text{$\overline{y!}:t_b$}}T_r'$
+         \item [2] $T_r\not \xrightarrow{\text{$\overline{y!}:t_b$}}$
+     \end{itemize}
+     
+     If the case 1 holds, by induction hypothesis $\overline{K}\xrightarrow{\text{$\overline{y!}(v)$}}\overline{K'}$ and $T_r'\Downarrow \overline{K'}$. Then [OutComp]: $K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K},R;D;r[F]\}\xrightarrow{\text{y!(v)}}K=[\tilde{x}>\tilde{y}]\{G;r=\overline{K'},R;D;r[F]\}$. Since $G$ did not move, all the projections remained the same, and since the output on the port $\overline{y}$ does not interfere with the conformance, we can conclude that $\itype(T_r)G\downharpoonright_r=LP$, and all the other types of subcomponents remained conformant with their local protocols because their types did not evolve neither $G$. With the conformance that remained and   [\thref{theorembase}] we can conclude that $K'\Downarrow T'$.\\
+     
+     
+     If the case 2 holds, we know that since the type $T$ can output, but $T_r$ cannot, it means that extracting the type we were able to capture the values that are input, but still flowing, or th ones that were protocol ``promised'' to give. Since all the dependencies of the port $y$ are satisfied, and $F=y\leftarrow \overline{y},F'$, but $\overline{y}$ still has some unsatisfied dependencies, the only possible case is that $\overline{y}$ still needs to receive the values from the ports that are in $\fp(LP)$: \\
+     
+     Let's take any input port in $\fp(LP)$ without loss of generality that still needs values to be input, so that $\overline{y}$ can output:
+     
+     $LP=G\downharpoonright_r$\\
+     $T_r=\{\widetilde{z:{t^i}_b};\C_r\}$\\
+     $C_r=[\overline{y}:t_b]:\B_r:[\D_r],\C_r'$\\
+     $\exists x'\in \fp(LP): \D_r=[x':t_b'']:M,D_r' \wedge (M=0 \lor M=\ic)$\\
+     
+     Since $K\Downarrow T\Rightarrow \itype(T_r)\bowtie LP$, and because $x'\in \fp(LP)\Rightarrow \itype(T_r)\bowtie \context[x'?:t_b''.LP']$.
+     
+     
+     [**]Let us prove by the induction on the number of evolution steps of $G$, that $G$ will have  an input  on $x'$  and that the conformance relation will remain.
+     
+     
+     
+     \textit{Base case.}  $G\xrightarrow{\text{$r?l_{x'}(v)$}}G'$ \\
+     
+     \begin{itemize}
+     
+    \item If   $G\xrightarrow{\text{$r?l_{x'}(v)$}}G'$ then $LP=x'?:t_b'.LP$.
+     By induction hypothesis $\overline{K}\xRightarrow{\text{$x'?(v)$}}\overline{K'}$.
+     So, the dependency is satisfied, hence: $\overline{K}\xRightarrow{\text{$x'?(v)$}}\overline{K'}\xrightarrow{\text{$\overline{y!}(v)$}}\overline{K''}$.
+     [Internal][InpChor] $K\xRightarrow{\text{y!(v)}}K'$.
+     
+     [$\triangle$] All the other subcomponents did not evolve, neither their types, and since the port $x'$ is the free port of $LP$, only the protocol projection for the component with the role $r$ changed, and others remained the same. Moreover [InpConf] $\itype(T_r')\bowtie LP'$.
+     
+     In conclusion [\thref{theorembase}], [$\triangle$] $\Rightarrow K'\Downarrow T'$.
+    
+    
+    \item
+    
+  
+    
+    
+    
+   \textit{Induction hypothesis. (2)} Lets assume that [**] holds for [k-1] steps.
+    
+    
+    $G\xrightarrow{\text{$pl_1(v)$}}G_1\xrightarrow{\text{$pl_2(v)$}}G_2 \cdots\xrightarrow{\text{$pl_{k-1}(v)$}}G_{k-1} \xrightarrow{\text{$r?l_{x'}(v)$}}G'$.
+    
+    
+    \item If  $G\xrightarrow{\text{$pl_1(v)$}}G_1\xrightarrow{\text{$pl_2(v)$}}G_2 \cdots\xrightarrow{\text{$pl_{k-1}(v)$}}G_{k-1}\xrightarrow{\text{$pl_k(v)$}} \xrightarrow{\text{$r?l_{x'}(v)$}}G'$, where $p$ can be role of any subcomponent of $K$, and $p\in\{p?,p!\}$.
+    
+    Let $G\xrightarrow{\text{$pl_1(v)$}}G_1$.\\
+    
+    If $p\neq r$ then by the rule [InpConf] ([OutConf]) the type of the component with the role $p$ stays conformant with its local protocol, and by induction hypothesis (1) after the evolution it remained well-typed. All the other projections of the protocol $G_1$ did not change, so all the components are conformant with their projections of the protocol $G_1$. Since  $K=[\tilde{x}>\tilde{y}]\{G,r=\overline{K},R;D;r[F]\}$ and $G\downharpoonright_r=G_1\downharpoonright_r=LP$ the extracted type for the component $K$ remained the same, and all the subcomponents are conformant with their local protocol we can conclude that [InpChor] $K'=[\tilde{x}>\tilde{y}]\{G_1,r=\overline{K},R;D;r[F]\}\Downarrow T$. By the induction hypothesys (2) $\overline{K}$ will have an input on $x'$, hence the dependency of $\overline{y}$ will be satisfied. 
+\\
+
+    
+    If $p=r?$ and $D=r.x''\xleftarrow{l_1}q,v,D;$ [InpConf], (Induction hypothesis (1)) $\overline{K}\xrightarrow{\text{x''?(v)}}\overline{K'}$ and $\overline{K'}\Downarrow T_r'$. 
+    [Inpchor]  $K'=[\tilde{x}>\tilde{y}]\{G_1,r=\overline{K},R;D;r[F]\}$. [InpConf] $\itype(T_r')\bowtie G_1\downharpoonright_r$. The types of the other components remained the same as did their local protocols. $T_r\xrightarrow{\text{$x'':t_b''$}}T_r'\Rightarrow T\xrightarrow{\text{$\tau$}}T $. By the definition of the  type extraction  $T$
+     is the type extracted from $G_1$ and $T_r'$. By induction hypothesis (2), eventually $\overline{K}$ will have an input on $x'$ and $\overline{y}$ will be able to output.
+    
+    
+    
+    
+    
+    \end{itemize}
+    
+    In conclusion following the rules [Internal], [OutChor] and [OutComp], [\thref{theorembase}] we proved that   $K \Downarrow T \wedge T\xrightarrow{\textit{$y!:t_b$}}T' \Rightarrow K\xRightarrow{\textit{$y!$(v)}}K' \wedge K'\Downarrow T'$.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+\end{itemize}
+
+
+
+
+
+
+\end{proof}
+

@@ -1,0 +1,135 @@
+
+  \section{ Base components}
+
+In this section we give a definition of the type extraction for the base component, together with some properties. 
+
+At this point we can determine (and check consistency) the basic types of values of the ports of a base component. For the composite component we assume that we can guess the $\Delta$ used in the protocol projection. To determine the basic types of the component ports you just look at the interfacing component and lift the types correspondingly to the forwarders.
+
+\subsection{Type extraction}
+\vspace{0.5cm}
+
+At the beginning we define a function $\stl$ that converts a set to a list.
+
+\begin{definition}
+
+Let $A$ be a (generic) set of elements. Function $\stl:A\rightarrow List$ is defined as follows:\\
+
+\begin{tabular}{l l l}
+
+$\stl(\emptyset):=$ & $\emptyset $ & \\
+$\stl({s}\cup A):=$ & $s,\stl(A)$ & $s\notin A$\\
+
+$\stl({s}\cup A):=$ & $\stl(A)$ & $s\in A$ 
+
+
+
+
+\end{tabular}
+
+\end{definition}
+\vspace{0.5cm}
+
+
+After we defined the function $\stl$ we can give a proper definition as an instruction of how to extract a type of a base component that is described in GC language.
+
+
+\begin{definition}{Type Extraction of a Base Component}
+
+Let $K$ be the base component and $K=[\tilde{x}>\tilde{y}]\{L\}$, $L=L_1,L_2, \dots L_n, L'$ where ($L_i=y_i=f(\tilde{x_i})<\tilde{\sigma_i}  \wedge  y_i\in \tilde{y} \wedge \tilde{x_i}\in \tilde{x}) \wedge (\forall y: L'=y=f(\tilde{x'}),L''| y\notin \tilde{y} \lor  \tilde{x'}\nsubseteq \tilde{x})$. We assume that given a function $f_i(\tilde{x_i})$ used in a local binder we can “guess” the types of the parameters and the image (return) type. The extracted type for the component $K$ is:\\
+
+\begin{tabular}{l}
+
+$T=\{\widetilde{\depen{x}{t_b}}; \C\}$\\
+$\widetilde{\depen{x}{t_b}}=\{\depen{x}{t_b}\ |\ x\in \tilde{x}\}$\\
+$\C= \stl(\{\constr{y_i}{t_b}{\infty}{\D_i(y_i)}\ |\  y_i\in \tilde{y}\})$\\
+$\D_i(y_i)=\stl(\{ \pev{x}{N} \ |\  y_i=f(\tilde{x_i})<\tilde{\sigma_1}, \sigma_{N+1}, \tilde{\sigma_2}   \wedge x\in \tilde{x_i}  \wedge$\\ $((x\in\cap_{\sigma_i\in\tilde{\delta_1}}dom(\sigma_i) \wedge x\notin dom(\sigma_{N+1})) \lor N=0)\})$.
+
+\end{tabular}
+
+\end{definition}
+The set of input ports coincides with $\tilde{x}$ but each port has a type of a value attached.
+Since it is a base component, we can talk only about ports that do not have any dependencies or if they have them it can only be a ``per each value dependency''. Moreover, for all the ports the maximum number that they can output is unbounded ($\infty$). We extract dependencies for each output port separately {$\D_i(y_i)$} and we are doing it from the function in the local binder that it is attached to the port ($y_i$). The dependency is created if $x$ is an argument of a function in local binder $y_i=f(\tilde{x_i})$. The number of values available on port $x$ for the port $y_1$ is determined by the number of mappings that have  $x$ mapped to a value. 
+
+
+
+In order to prove that our language system is safe we need to prove the type preservation (subject reduction) and progress. Before we do, we need to observe an evolution of a component (now base, afterwords composite) and the evolution of its type. 
+For a base component we start with two propositions that capture the evolution of local binders after an input/output:
+
+
+
+\begin{proposition}\thlabel{prop1} If $L \xrightarrow{x?(v)} L'$ then: \\
+$\mbox{If }\ L=f(\tilde{x})<\tilde{\sigma_i},\tilde{\sigma},L_1 \wedge x \in \tilde{x} \ \wedge \  (N=| \tilde{ \sigma_i}|: x \in dom (\tilde{\delta_i}) \ \wedge \  x \notin dom(\tilde{\delta})) \Rightarrow \\
+L'=f(\tilde{x})<\tilde{\delta_i'},\tilde{\delta'},L_1'\  \wedge \  (N+1=|\tilde{\delta_i'}|: \ \wedge  \ x \in dom(\tilde{\delta_i'}) \ \wedge \  x \notin dom(\tilde{\delta'})) \lor$ \\
+$\mbox{If }\ L=f(\tilde{x}),L_1 \ \wedge \ x\notin \tilde{x} \Rightarrow L'=f(\tilde{x}),L_1'$
+
+\end{proposition}
+
+
+
+
+\begin{proof} Proof by induction on the derivation of $L \xrightarrow{x?(v)} L'$.\\
+
+[LInpDisc] $y=f(\tilde{x})<\tilde{\delta}\xrightarrow{\text{x?(v)}}y=f(\tilde{x})<\tilde{\delta}$, by inversion we know that $x\notin \tilde{x}$ so the property holds.\\
+
+[LInpNew] $y=f(\tilde{x})<\tilde{\delta}\xrightarrow{\text{x?(v)}}y=f(\tilde{x})<\tilde{\delta},\{x\rightarrow v\}$, by inversion we know that $x\in \cap_{\delta_i \in \tilde{\delta}} \  dom(\delta_i)$, $i\in \{1,2,\dots,n\}$. After input on $x$, the number of mappings for $x$ increased by 1. So, the property holds.\\
+
+[LInpUpd] $y=f(\tilde{x})<\tilde{\delta_1},\delta,\tilde{\delta_2}\xrightarrow{\text{x?(v)}}y=f(\tilde{x})<\tilde{\delta_1},\delta [x\rightarrow v],\delta_2$. By inversion we know that $x\in \cap_{\delta_i \in \tilde{\delta_1}} \  dom(\delta_i)$ and $x\in\tilde{x}$. After input on $x$,  the number of mappings for $x$ increased by 1. So, the property holds.\\
+
+
+[LInpList] $L_1,L_2 \xrightarrow{\text{x?(v)}} L_1',L_2'$. By inversion we know that $L1\xrightarrow{\text{x?(v)}}L_1'$, and by i.h. we know that for $L_1'$ the property holds. The same reasoning for $L_2\xrightarrow{\text{x?(v)}}L_2'$, so also for $L_2'$ the property holds. Directly we can conclude that the property holds also for $L_1',L_2'$.
+
+
+
+ \end{proof}
+ 
+  ~\thref{prop1} states that if a list of local binders can receive a value on the port $x$, then all local binders from the list react to in the following way: if we have an input on the port $x$ and $x$ is an argument of a function in a local binder, then the number of mappings that have $x$ mapped to a value increases by one. Instead, the local binder remains the same if $x$ is not an argument of a function in that local binder. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ \begin{proposition}\thlabel{prop2} If $L \xrightarrow{y!(v)} L'$ then: \\
+ $L=y=f(\tilde{x})<\tilde{\delta},L_1 \ \wedge \ |\tilde{\delta}|=n \Rightarrow L'=y=f(\tilde{x})<\tilde{\delta'},L_1 \ \wedge  \ |\tilde{\delta'}|=n-1 \lor\\
+ L=y=f(),L_1\Rightarrow L'=y=f(),L_1 $  .
+ 
+ \end{proposition}
+ 
+ \begin{proof} Proof  by induction on the derivation of $L \xrightarrow{y!(v)} L'$.\\
+ 
+ [LOut] $ y=f(\tilde{x})<\delta, \tilde{\delta}\xrightarrow{\text{y!(v)}}y=f(\tilde{x})<\tilde{\delta}$, so $f(\tilde{x})$ has one mapping less. Hence, the property holds.\\
+ 
+[LConst] $f()<\cdot \xrightarrow{\text{y!(v)}} f()<\cdot$, the property directly holds.\\
+ 
+ 
+[LOutLift] $L_1,L_2\xrightarrow{\text{y!(v)}}L_1',L_2$. By inversion we know that $L_1 \xrightarrow{\text{y!(v)}} L_1'$ and  by i.h. we know that the property holds for $L_1'$. If we add to the list any other functions, property will hold, because $y$ is a function in $L_1$ (and also in $ L_1'$). So the property holds also for $L_1',L_2$.
+ 
+ \end{proof}
+ 
+
+   Proposition~\thref{prop2} states that if a list of local binders can produce a value from the port $y$, then the evolved local binder is only the one connected to the port $y$. The evolved local binder will have one mapping less from ports to value considering all the argument of a function from the local binder. Instead, if we have a constant function (without any arguments) then the local binder suffers no change.
+ 
+ Since, according to the semantics base components, we know that when the base component evolves, the interface remains the same, but the difference is in the local binders. Hence, the following lemma:
+ 
+ \begin{lemma}\thlabel{bcevol} Let $K$ be the base component and $K=[\tilde{x}>\tilde{y}]\{L\}$. If $K \xrightarrow{\lambda(v)} K'$ then, \\
+ 
+ [1.] $\lambda=x?$ then $L\xrightarrow{x?(v)}L' \wedge x\in\tilde{x}$ . \\
+ 
+ [2.] $\lambda=y!$ then $L\xrightarrow{y!(v)}L' \wedge y\in\tilde{y}$ .
+ 
+ 
+ \end{lemma}
+ 
+ \begin{proof} Proof by induction on the derivation of $K\xrightarrow{\lambda(v)} K'$. \\
+\begin{enumerate}
+    \item $\lambda=x?$ : [InpBase] $[\tilde{x}>\tilde{y}]\{L\}\xrightarrow{x?(v)}[\tilde{x}>\tilde{y}]\{L\}$, by inversion we know that $L\xrightarrow{x?(v)}L'$ and that $x\in\tilde{x}$.
+      \item $\lambda=y!$ : [OutBase] $[\tilde{x}>\tilde{y}]\{L\}\xrightarrow{y!(v)}[\tilde{x}>\tilde{y}]\{L\}$, by inversion we know that $L\xrightarrow{x?(v)}L'$ and that $y\in\tilde{y}$.
+\end{enumerate}
+ 
+ \end{proof}
+ 
+
+ 
+ 
+ 

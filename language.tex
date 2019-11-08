@@ -1,0 +1,449 @@
+%!TEX root =  main.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% SYNTAX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+\begin{figure}[t]
+$$
+\begin{array}{c}
+  \begin{array}{r@{\qquad}rl@{\quad}ll@{\qquad}l}
+    \text{Components} &
+     C & ::= & \chorboxb {\tilde x}{\tilde y}{L} \\
+            && \pp & \chorbox {\tilde x}{\tilde y}{D}{\role{r}[F]}{R}{G}
+            \\[1ex]
+	\text{Local binders} & L & ::=  &
+                \lbinderp{y} {\mathit{f}(\tilde{x})} \ \pp \
+                 L,L
+    \\[1ex]
+    \text{Protocols} & G &::=  & \gcom p \lab{\tilde  q};G  \\
+            && \pp     & \gchoice p\lab{ \tilde q} {G}{G} \\ 
+            && \pp     & \mu\recvar X.G \\ 
+            && \pp     & \recvar X \\ 
+            && \pp     & \gend 
+    \\[1ex]
+    \text{Role assignments} & R & ::= & \roleas{p}{C} \ \pp \  R,R
+    \\[1ex]
+    \text{Connection binders} & D & ::= &
+             \dbinder{\lab}{p}{x}
+            {\roleport{q}{y}}  \ \pp \  D,D
+               \\[1ex]
+    \text{Forwarders} & F & ::=  &
+                \fbinder zw \ \pp \   F,F
+                & 
+  \end{array}
+\end{array}
+$$
+\caption{Syntax of Governed Components}
+\label{fig:gc_syntax}
+\end{figure}
+
+Runtime local binders
+$L ::= \lbinder{y}{\tilde \sigma}{f(\tilde x)} \pp L,L$
+
+Runtime protocols
+$G ::= \ldots \pp \gcom {}{\lab,v}{\tilde q};G \pp
+\gchoice{}{\lab,v}{\tilde q}{G_1}{G_2} $
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% SEMANTICS - BASE COMPONENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+\begin{figure}[t]
+\[
+    \begin{array}{c}
+        \infer[\m{OutBase}]
+        {
+        \chorboxb {\tilde x}{\tilde y}{L}
+        \lto{y!{v}{}}
+        \chorboxb {\tilde x}{\tilde y}{L'}
+        }
+        {
+        L
+        \lto{y!{v}{}{}}
+        L'
+        & y \in \tilde y
+        }
+\qquad
+        \infer[\m{InpBase}]
+        {
+        \chorboxb {\tilde x}{\tilde y}{L}
+        \lto{x?v}
+        \chorboxb {\tilde x}{\tilde y}{L'}
+        }
+        { L \lto{x?v} L' & x \in \tilde x }
+\\[2ex]
+           \infer[\m{LConst}]
+            {
+            \lbinder y{\cdot} {\mathit{f}()}
+            \lto{{y}!{v}}
+            \lbinder y{\cdot}{\mathit{f}()}}
+        {f() \eval v}
+\qquad
+            \infer[\m{LOut}]
+            {
+            \lbinder y{\sigma,{\tilde\sigma}} {\mathit{f}(\tilde{x})}
+            \lto{{y}!{v}}
+            \lbinder y{\tilde \sigma}{\mathit{f}(\tilde{x})}
+            }
+        {
+			\{\tilde x\} {=} \dom(\sigma) & f(\sigma(\tilde x)) \eval v
+        }
+\\[2ex]
+\infer[\m{LInpNew}]
+{
+\lbinder y{\tilde\sigma}{f(\tilde{x})}
+\lto{{x}?{v}}
+\lbinder y{\tilde\sigma,\{x \mapsto v\}} {f(\tilde{x})}
+}
+{
+x \in \bigcap_{\sigma_i \in \tilde \sigma}\dom(\sigma_i)
+&
+x \in \tilde x
+}
+\\[2ex]
+	\infer[\m{LInpUpd}]
+        {
+        \lbinder y{\tilde\sigma_1,\sigma,\tilde\sigma_2} {f(\tilde{x})}
+       \lto{{x}?{v}}
+        \lbinder y{\tilde\sigma_1,\sigma[x \mapsto v],\tilde\sigma_2} {f(\tilde{x})}
+        }
+        {
+		x \in \bigcap_{\sigma_i \in \tilde \sigma_1}\dom(\sigma_i)
+		&
+		x \not\in \dom(\sigma)
+		&
+		x \in \tilde x
+        }
+\\[2ex]
+\infer[\m{LInpDisc}]
+{
+	\lbinder y{\tilde\sigma} {f(\tilde{x})}
+       \lto{{x}?{v}}
+    \lbinder y{\tilde\sigma} {f(\tilde{x})}
+}
+{
+	x \not\in \tilde x
+}
+\\[2ex]
+\infer[\m{LOutLift}]
+       {
+       L_1, L_2
+       \lto{{y}!{v}}
+       L_1', L_2
+       }
+       {
+	L_1 \lto{{y}!{v}}L_1'}
+\qquad
+       \infer[\m{LInpList}]
+       {
+       L_1, L_2
+       \lto{{x}?v}
+       L_1', L_2'
+       }
+       {
+	L_1 \lto{{x}?v}L_1'
+	&
+	L_2 \lto{{x}?v}L_2'}
+    \end{array}
+\]
+  \caption{Semantics of base components}
+  \label{fig:gc_semantics_base}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% SEMANTICS - COMPOSITE COMPONENTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{figure}[t]
+\[
+    \begin{array}{c}
+        \infer[\m{OutChor}]
+        {\chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{p}{C}, R}{G}
+	\lto{\tau}
+        \chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{ \roleas{p}{C'}, R}{G'}}        
+	{C \lto{{u}!{v}{}} C' \qquad 
+	D = \dbinder{\lab}{q}{z} {\roleport{p}{u}}, D'
+        \qquad
+        G \lto{\labout{\role p}{\lab}{v}} G'
+        }
+\\[2ex]
+        \infer[\m{InpChor}]
+        {\chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{ \roleas{q}{C},  R}{G}
+	\lto{\tau}
+        \chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{q}{C'},  R}{G'}}        
+	{
+        C \lto{{z}?v} C' \qquad
+         D = \dbinder{\lab}{q}{z} {\roleport{p}{u}},  D' \qquad
+        G \lto{\labinp{\role q}{\lab}{v}} G'
+	}
+\\[2ex]
+	\infer[\m{Internal}]
+	{\chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{s}{C},  R}{ G}
+	\lto{\tau}
+	\chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{ \roleas{s}{C'},  R}{G}}	
+	{C \lto{\tau} C'}
+\\[2ex]
+	\infer[\m{OutComp}]
+	{
+	\chorbox {\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{r}{C},  R}{G}
+	\lto{{y}!{v}{}}
+	\chorbox {\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{r}{C'},  R}{G}
+	}	
+	{
+	C\lto{{z}!{v}{}{}} C'
+	\qquad
+	F = \fbinder {y}z ,  F'
+	\qquad
+	y \in \tilde y
+	}
+\\[2ex]
+        \infer[\m{InpComp}]
+        {\chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{\roleas{r}{C}, R}{G}
+	\lto{{x}?v}
+        \chorbox{\tilde x}{\tilde y}{ D}{\role{r}[ F]}{ \roleas{r}{C'}, R}{G}}        
+	{ 
+	C \lto{{z}?v} C'  \qquad  F = \fbinder z{x},  F' \qquad x \in \tilde x
+	}
+\end{array}
+\]
+  \caption{Semantics of composite components.}
+  \label{fig:gc_semantics_composite}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% SEMANTICS - PROTOCOLS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+\begin{figure}[t]
+\[
+  \begin{array}{c}
+    \infer[\textsf{GSVal}]
+    {
+    \gcom p \lab{\tilde  q};\,G
+    \ \lto{\labout{\role p}{\lab}{v}}\
+    \gcom {} {\lab,v}{\tilde  q};\,G
+    }
+    {
+    }
+    \ \quad
+           \infer[\textsf{GSChoice}]
+           {
+           \gchoice p \lab{\tilde  q}{G_1}{G_2}
+           \ \lto{\labout{\role p}{\lab}{v}}\
+           \gchoice {} {\lab,v}{\tilde  q}{G_1}{G_2}
+           }
+           {
+           v\in\{\inl,\inr\}
+           }
+    \\[2ex]
+    \infer[\textsf{GRVal}]
+    {
+    \gcom {} {\lab,v}{\tilde  q,q};\,G
+    \;\;
+    \lto{\labinp{\role q}{\lab}{v}}\;\;
+    \gcom {} {\lab,v}{\tilde  q};\,G
+    }
+    {
+    \tilde{\role q} \mbox{ nonempty}
+    }
+    \ \quad
+    \infer[\textsf{GRVal2}]
+    {
+    \gcom {} {\lab,v}{q};\,G
+    \;\;\lto{\labinp{\role q}{\lab}{v}}\;\;
+    G
+    }
+    {
+    }
+    \\[2ex]
+           \infer[\textsf{GRChoice}]
+           {
+           \gchoice {} {\lab,v}{\tilde  q,q}{G_1}{G_2}
+           \;\;\lto{\labinp{\role q}{\lab}{v}}\;\;
+           \gchoice {} {\lab,v}{\tilde  q}{G_1}{G_2}
+           }
+           {
+           \tilde{\role q} \mbox{ nonempty}
+           }
+    \\[2ex]
+               \infer[\textsf{GRChoice2}]
+           {
+           \gchoice {} {\lab,v}{ q}{G_{\inl}}{G_{\inr}}
+           \;\;\lto{\labinp{\role q}{\lab}{v}}\;\;
+           G_v
+           }
+           {
+           v \in\{\inl,\inr\}
+           }
+                      \ \quad
+                   \infer[\textsf{GRec}]
+           {
+           \mu \recvar X. G \lto{\alpha} G'
+           }
+           {
+	   G \subst{\mu \recvar X. G}{\recvar X} \lto{\alpha} G'
+           }
+    \\[2ex]
+    \infer[\textsf{GConc1}]
+    {
+    \gcom {p} \lab{\tilde{\role q}};\,G
+    \;\;\lto{\alpha}\;\;
+    \gcom {p} \lab{\tilde{\role q}};\,G'
+    }
+    {
+    G \ \lto{\alpha}\ G'
+    \quad
+    \m{role}(\alpha) \not\in \role p,\tilde{\role q}
+    }
+    \quad
+           \infer[\textsf{GConc2}]
+           {
+           \gchoice {p} {\lab}{\tilde{\role q}}{G_1}{G_2}
+           \;\;\lto{\alpha}\;\;
+           \gchoice {p} {\lab}{\tilde{\role q}}{G_1'}{G_2'}
+           }
+           {
+           G_1\lto\alpha G_1'
+           \quad
+           G_2 \lto\alpha G_2'
+           \quad
+           \m{role}(\alpha) \not\in \role p,\tilde{\role q}
+           }
+\\[2ex]
+    \infer[\textsf{GConc3}]
+    {
+    \gcom {} {\lab,v}{\tilde  q};\,G
+    \;\;\lto{\alpha}\;\;
+    \gcom {} {\lab,v}{\tilde  q};\,G'
+    }
+    {
+    G\lto{\alpha} G'
+    \quad
+    \m{role}(\alpha) \not\in \tilde{\role q}
+    }
+\    \quad
+           \infer[\textsf{GConc4}]
+           {
+           \gchoice {} {\lab,\inl}{\tilde  q}{G_1}{G_2}
+           \;\;\lto{\alpha}\;\;
+           \gchoice {} {\lab,\inl}{\tilde  q}{G_1'}{G_2}
+           }
+           {
+           G_1\lto\alpha G_1'
+           \quad
+           \m{role}(\alpha) \not\in \tilde{\role q}
+           }
+    \\[2ex]
+           \infer[\textsf{GConc5}]
+           {
+           \gchoice {} {\lab,\inr}{\tilde  q}{G_1}{G_2}
+           \;\;\lto{\alpha}\;\;
+           \gchoice {} {\lab,\inr}{\tilde  q}{G_1}{G_2'}
+           }
+           {
+           G_2 \lto\alpha G_2'
+           \quad
+           \m{role}(\alpha) \not\in \tilde{\role q}
+           }
+  \end{array}
+\]
+\caption{Semantics of protocols.}
+\label{fig:g_semantics}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% PROTOCOL PROJECTION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+\begin{figure*}[t]
+\[
+\begin{array}{lclll}
+%\projc{G}{p}{\tilde D}{\labenv} & \rightarrow & T\\
+%\\
+\projc{(\gcom p \lab{\tilde q};G)}{\role p}{D}{\labenv} & \triangleq & 
+\tout z B \projc{G}{\role p}{D}{\labenv}
+& %\\ \multicolumn{3}{r} %& & \hspace{2cm}\hfill
+{( D =  \dbinder \lab { q}{w}{\roleport{p}{z}},  D' \; \wedge \; 
+\labenv(\lab) = B) }
+\\
+\projc{(\gcom p \lab{\tilde q, q};G)}{{\role q}}{ D}{\labenv} & \triangleq & 
+\tinp {w} B \projc{G}{{\role q}}{ D}{\labenv}
+& %\\ \multicolumn{3}{r} % & & \hfill
+{(%{{\role q}_i} \in {\tilde {\role q}} \; \wedge \; 
+ D =  \dbinder \lab { q}{w}{\roleport{p}{z}},  D' \; \wedge \; 
+\labenv(\lab) = B) }
+\\
+\projc{(\gcom p \lab{\tilde q};G)}{{\role r}}{ D}{\labenv} & \triangleq 
+& \projc{G}{{\role r}}{ D}{\labenv}
+& %\hfill\
+({\role r} \not \in {\role p}, \tilde{{\role q}})\\
+\projc{(\gcom {} {\lab,v}{\tilde q,q};G)}{{\role q}}{ D}{\labenv} & \triangleq 
+& \tinp {w} B \projc{G}{{\role q}}{ D}{\labenv} 
+& %\\ \multicolumn{3}{r} % & & \hfill
+{(%{{\role q}_i} \in {\tilde {\role q}} \; \wedge \;  
+D = \dbinder \lab {q}{w}{\roleport{p}{z}},  D' 
+\;\wedge\; v: B )}
+\\
+\projc{(\gcom {} {\lab,v}{\tilde q};G)}{{\role r}}{ D}{\labenv} & \triangleq & 
+\projc{G}{{\role r}}{ D}{\labenv}
+& ({\role r} \not \in  \tilde{{\role q}})
+\\
+\projc{(\gchoice p\lab{\tilde q} {G_1}{G_2})}{{\role p}}{ D}{\labenv} 
+& \triangleq & \tchoice{z}{\projc{G_1}{{\role p}}{ D}{\labenv}}
+{\projc{G_2}{{\role p}}{ D}{\labenv}}
+& %\\ \multicolumn{3}{r} % & & \hfill
+{( D = \dbinder \lab {q}{w}{\roleport{p}{z}},  D' ) }
+\\
+\projc{(\gchoice p\lab{\tilde q, q} {G_1}{G_2})}{{\role q}}{ D}{\labenv}
+& \triangleq & \tbranch{w}{\projc{G_1}{{\role q}}{ D}{\labenv}}
+{\projc{G_2}{{\role q}}{ D}{\labenv}} 
+&%\\ \multicolumn{3}{r} % & & \hfill
+{(%{{\role q}_i} \in {\tilde {\role q}} \; \wedge \;  
+D = \dbinder \lab {q}{w}{\roleport{p}{z}},  D')}
+\\
+\projc{(\gchoice p\lab{\tilde q} {G_1}{G_2})}{{\role r}}{ D}{\labenv} 
+& \triangleq & \projc{G_1}{{\role r}}{ D}{\labenv}
+&%\\ \multicolumn{3}{r} % & & \hfill
+{ ({\role r} \not \in {\role p}, \tilde{{\role q}}\;\wedge\;
+\projc{G_1}{{\role r}}{ D}{\labenv} = \projc{G_2}{{\role r}}{ D}{\labenv})}
+\\
+\projc{(\gchoice {}{\lab,v}{\tilde q, q} {G_1}{G_2})}{{\role q}}{ D}{\labenv} 
+& \; \triangleq \; & 
+\tbranch{w}{\projc{G_1}{{\role q}}{ D}{\labenv}}{\projc{G_2}{{\role q}}{ D}{\labenv}} 
+&%\\ \multicolumn{3}{r} % & & \hfill 
+{(%{{\role q}_i} \in {\tilde {\role q}} \; \wedge \;  
+D = \dbinder \lab {q}{w}{\roleport{p}{z}},  D'
+ \;\wedge\; v: \chot)}
+\\
+\projc{(\gchoice {}{\lab,\inl}{\tilde q} {G_1}{G_2})}{{\role r}}{ D}{\labenv} 
+& \triangleq & 
+\projc{G_1}{{\role r}}{ D}{\labenv} 
+&%\hfill
+ ({\role r} \not \in  \tilde{{\role q}})\\
+\projc{(\gchoice {}{\lab,\inr}{\tilde q} {G_1}{G_2})}{{\role r}}{ D}{\labenv}  
+& \triangleq & \projc{G_2}{{\role r}}{ D}{\labenv} 
+&%\hfill
+ ({\role r} \not \in  \tilde{{\role q}})
+\\
+\projc{(\mu \recvar X.G)}{{\role r}}{ D}{\labenv} 
+ & \triangleq & \mu \recvar X.(\projc{G}{{\role r}}{ D}{\labenv} )
+&%\quad \hfill
+ ({\role r} \in \mathit{roles}(G))\\
+ \projc{(\mu \recvar X.G)}{{\role r}}{ D}{\labenv} 
+ & \triangleq & \tend
+&%\hfill
+ ({\role r} \not \in \mathit{roles}(G))\\
+\projc{\recvar X}{{\role r}}{ D}{\labenv}  & \triangleq & \recvar X
+\\
+\projc{\gend}{{\role r}}{ D}{\labenv}  & \triangleq & \tend
+\end{array}
+\]
+%\vspace{-11pt}
+\caption{Protocol projection (including runtime terms).}
+\label{fig:chorprojfull}
+%\vspace{-12pt}
+\end{figure*}

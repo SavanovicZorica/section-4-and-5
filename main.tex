@@ -1,0 +1,60 @@
+\documentclass[12pt]{spieman}
+
+
+
+\usepackage[square,numbers]{natbib}
+\usepackage{stackengine}
+\usepackage{mathtools}
+
+
+\usepackage{float}
+\usepackage{color, colortbl}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsthm}
+\usepackage{amsmath,amssymb}
+\usepackage{cleveref}
+\crefformat{table}{Table}
+\usepackage{tocloft}
+\usepackage{proof}
+\usepackage{theoremref}
+\usepackage{enumitem}
+
+
+
+
+
+\input{macros.tex}
+
+\title{Behavioural types for reactive components}
+
+
+\author{Zorica Savanovi\'c\\
+IMT School for Advanced Studies Lucca, SysMA research unit\\ Supervisors: Asst. Prof. Hugo Torres Vieira and Letterio Galletta}
+
+
+
+
+
+\renewcommand{\cftdotsep}{\cftnodots}
+\cftpagenumbersoff{figure}
+\cftpagenumbersoff{table}
+\begin{document}
+\maketitle
+
+\begin{spacing}{1.5}
+
+\input{syntax_and_semantics.tex}
+
+\input{base_component.tex}
+
+\input{type_properties.tex}
+
+
+\end{spacing}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

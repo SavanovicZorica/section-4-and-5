@@ -1,0 +1,210 @@
+\section{A type language for the components}
+
+In this section we give the formal presentation of our type system for the components, that serves for the purpose of making the communication among them safe and progress. First, we start by describing the notations that we use for the type syntax in order to introduce each construct's meaning. Second, we move to the operational semantics, where we try to capture the behaviour of components.
+
+
+
+
+
+\subsection{Syntax of Typing language} \label{Syntax of Typing language}
+
+We define type $T$ as a pair ($\{\ ,\ \}$) whose first element is a (possibly empty) set, intended to describe inputs and the second one is a (possibly empty) list, intended to describe outputs (Table~\ref{tab:typesyntax}): We have a set of input ports (ranged over $x,z,u,v$), where each of them has attached a type of a value (ranged over $t_{b_1},t_{b_2},...,t'_{b},t''_{b}...$) that the port allows to be received on it. This set is denoted by $\widetilde{\depen{x}{t_b}}$ ($\depen{x_1}{t_{b_1}},\depen{x_2}{t_{b_2}}...$) and it is the first element of a type description. The second element is a list of $Constraints$ denoted by $\C$ that describes what are the three constraints or conditions that each output port needs to meet in order for a value to be sent from it. The first constraint, similar to input ports, is a type of a value that can be sent from that port ($\depen{y}{t_b}$). The second constraint is the $Boundary$ denoted by $\B$ that represents the maximum number of values that can be produced from a specific port. This number can be bounded ($\N$) or unbounded ($\infty$). Since we might need values to be received on some input ports in order to compute a value for the output it is needed to capture this dependencies of output ports on input ports. For that reason we have the third constraint $\D$ ($Dependency$). It is a (possibly empty) list of $dependencies$ that can be found in two forms: $\pev{x}{N}$ (``per each value'') $\ind{x}$ (''initial``). ``Per each value'' dependency announces that per each value that the specific port wants to output it needs a value to be received on that input port, where $N$ declares the number of values received on $x$ waiting to be output (from a specific port). Instead, ``initial'' dependency, is a kind of dependency where some output port needs only one value to be received on a specific input port after which it is able to produce as many values as it is allowed by the boundary (up to satisfying other dependencies).  
+
+Meta-symbol $t_b$ (basic type) in this paper serves for the purpose of matching the type of values that can be received trough the port or sent via it. The basic type information comes from the functions in the local binders. We need to distinguish the types of the ports, since the functions in the local binders do not say anything about matching the type of for example arguments and the image. The goal is to ensure there will be no data-mismatch (expected vs. actual).      
+
+\vspace{0.5cm}
+\begin{table}[t]
+\centering
+\begin{tabular}{l l}
+   
+
+Types  & $\T::=\types{\depen{x}{t_b}}{\C}$ 
+\vspace{0.2cm}\\
+Constraints & $\C::=\constr{y}{t_b}{\B}{\D} \ |\ \emptyset \ |\ \C_1,\C_2$
+\vspace{0.2cm}\\
+
+Dependencies & $\D::=\pev{x}{M}  \ |\ \emptyset \ |\ \D_1,\D_2$
+\vspace{0.2cm}\\
+
+
+Kinds of dependency & $M::=N\ |\ \ic$
+\vspace{0.2cm}\\
+
+Boundary & $\B::=N\ |\ \infty$
+\vspace{0.2cm}\\
+
+& $N\in \mathbb{N}_0$
+\vspace{0.2cm}\\
+
+
+& $\pev{x}{N}$-`per each value'
+\vspace{0.2cm}\\
+
+& $\ind{x}$-`initial condition'
+\\
+\\
+
+
+\end{tabular}
+
+
+ \caption{Type Syntax}
+    \label{tab:typesyntax}
+\end{table}
+
+
+\begin{convention}\thlabel{sin1} For every $\D$ and every $\C$ the following holds:
+
+\begin{itemize}
+\item {[Shuffle $\D$]}: $\D_1,\D_2\equiv\D_2,\D_1$
+\item {[Shuffle $\C$]}: $\C_1,\C_2\equiv\C_2,\C_1$
+\item {[Empty Concatenation $\D$]}:
+$\D,\emptyset\equiv\emptyset,\D\equiv\D$
+\item {[Empty Concatenation $\C$]}: $\C,\emptyset\equiv\emptyset,\C\equiv\C$
+\end{itemize}
+\end{convention}
+
+
+
+
+\subsection{Type semantics}
+\vspace{0.5cm}
+
+Now we move to the operational semantics of the type language in terms of a labelled transition system (LTS). With $\xrightarrow{\text{$\lambda$}}$ we denote a five kinds of transitions where the syntax of labels is: $\lambda::=\depen{x?}{t_b}\ |\ \depen{y!}{t_b}\ |\ x?\ |\ y!\ |\ \tau$. Label $\depen{x?}{t_b}$ denotes an input of a value with type $t_b$ on the port $x$, $\depen{y!}{t_b}$ denotes an output of a value with type $t_b$ from the port $y$. Labels $x?$ and $y!$ are similar but with an abstraction of the type of values and $\tau$ is an internal move. The rules defining the semantics of the types are separated in two tables: one for input  (displayed in Table~\ref{tab:input_semantics}) and the other one for output and internal move (Table~\ref{tab:output_semantics}). 
+
+
+
+
+
+
+
+
+
+\begin{table}[t]
+
+
+\begin{center}
+
+
+$\begin{tabular}{c c}
+
+\infer [{[T1]}]{\types{\depen{x}{t_b'}}{\emptyset}\xrightarrow{\text{$\depen{x?}{t_b}$}}\types{\depen{x}{t_b'}}{\emptyset}}{}
+  & \infer[{[T2]}]{\types{\depen{x}{t_b'}}{\C}\xrightarrow{\text{$\depen{x?}{t_b}$}}\types{\depen{x}{t_b'}}{\C'}}{\C\xrightarrow{\text{$x?$}}\C' & \exists t_b: \depen{x}{t_b}\in\widetilde{\depen{x}{t_b'}}} \\ 
+& \\
+
+\infer [{[T3]}]{\C_1,\C_2\xrightarrow{\text{$x?$}}\C_1',\C_2'}{\C_1\xrightarrow{\text{$x?$}}\C_1' & \C_2\xrightarrow{\text{$x?$}}\C_2'}
+ &
+ \infer[{[T4]}]{\constr{y}{t_b}{\B}{\D}\xrightarrow{\text{$x?$}}\constr{y}{t_b}{\B}{\D}}{x\notin dom[\D]}\\
+ 
+& \\
+ \multicolumn{2}{c}{\infer[{[T5]}]{\constr{y}{t_b'}{\B}{\ind{x},\D}\xrightarrow{\text{$x?$}}\constr{y}{t_b'}{\B}{\D}}{}}\\ 
+ 
+ & \\
+ 
+\multicolumn{2}{c}{ \infer[[{T6]}]{\constr{y}{t_b'}{\B}{\pev{x}{N},\D}\xrightarrow{\text{$x?$}}\constr{y}{t_b'}{\B}{\pev{x}{N+1},\D}}{}}\\
+
+& \\
+
+
+
+
+
+ \end{tabular}$
+
+
+
+\end{center}
+\caption {Input-Type Semantics} \label{tab:input_semantics}
+
+\end{table}
+
+
+Rule [T1] declares that even if the list of the constraints is empty, we can always receive an input of a corresponding type to one of the ports that describe the type of the component. Rule [T2] states that if the constraint can receive a value of a type $t_b$ on the port $x$ on one of the input ports described in the type, then the type can input a value of the type $t_b$ on the corresponding port.  Rule [T3]  states that whenever we can receive  a value  on an input  port, all the constraints  are allowed
+to react to it receiving a value of a corresponding type. Rule [T4] states that if we input on the port that is not in the domain of the list of the dependencies of the constraint, then the constraint does not react to it, where $dom(\D)=\{x\ |\ \D=\pev{x}{M},\D'\}$. If in the list of the dependencies we have the output port that depends initially on some input port, then Rule [T5] states that after an input on that port, the dependency is dropped. Instead, if it was ``per each value'' [T6] dependency on the port $x$, with an input on it, the number of values received on $x$ for $y$ to be output, increases by one. Rule [T7] states that whenever we can produce a value from some port, all dependencies of that port are allowed to react to it. Rule [T8] states that if the list of dependencies of the port $y$ is able to output (it is satisfied), and the port $y$ did not exceeded the boundary, then the type can output from the port $y$. Rule [T9] states that if the port $y$ does not depend on any port, the type can always output from the corresponding port (up to the number of values allowed by the boundary). The rule [T10] states that with an output ``per each value'' dependency will decrease the number of values received by one, as long as that number was greater than 0. Notice that if the port can output a value, the only dependencies that can have are  ``per each value'' dependencies. Rule [T11] is an axiom that declares that the type will not suffer any changes with an internal move.
+
+
+
+\vspace{1cm}
+
+\begin{table}[t]
+
+\begin{center}
+   
+$\begin{tabular}{c c}
+
+ \multicolumn{2}{c}{\infer [{[T7]}]{\D_1,\D_2\xrightarrow{\text{!}}\D_1',\D_2'}{\D_1\xrightarrow{\text{!}}\D_1' & \D_2\xrightarrow{\text{!}}\D_2'} } \\
+ 
+ 
+ & \\
+\multicolumn{2}{c}{\infer [{[T8]}]{\types{\depen{x}{t_b'}}{\constr{y}{t_b}{\B}{\D},\C}\xrightarrow{\textbf{$\depen{y!}{t_b}$}}\types{\depen{x}{t_b'}}{\constr{y}{t_b}{\B-1}{\D},\C}}{\D\xrightarrow{\text{!}}\D' & \B>0}
+ 
+ 
+ 
+ }\\
+& \\
+
+\multicolumn{2}{c}{\infer [{[T9]}]{\types{\depen{x}{t_b'}}{\constr{y}{t_b}{\B}{\emptyset},\C}\xrightarrow{\textbf{$\depen{y!}{t_b}$}}\types{\depen{x}{t_b'}}{\constr{y}{t_b}{\B-1}{\emptyset},\C}}{\B>0}
+ 
+ 
+ 
+ }\\
+
+& \\
+
+ \infer[{[T10]}]{\pev{x}{N}\xrightarrow{\text{!}}\pev{x}{N-1}}{ N\geq 1} &
+
+
+
+\infer[{[T11]}]{T\xrightarrow{\text{$\lambda$}}T}{}\\
+& \\
+
+
+ \end{tabular}$
+
+
+
+\end{center}
+\caption {Output/Internal-Type Semantics} \label{tab:output_semantics}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+  \textbf{Local protocol}\\
+  
+  Local protocol $LP$ is a projection of a global protocol (protocol of a composite component) to an internal component. We use similar reasoning for the protocol projection, with a difference where our local protocols give the local information on the order of receiving/sending values of a specific type given as $\Delta$ (in Protocol projection Table) to/from the ports of an inner component. The syntax of a local protocol is given in the Table~\ref{tab:localprotocol}. The term $x?:t_b.LP$ denotes that a component can input a value of a type $t_b$ on the port $x$ and that only after an input on it, continues as a protocol $LP$. The term $y$ is similar, but the inner component has to output first. Then we have a standard recursion and the termination of the protocol.
+  
+  
+  
+  
+  
+  \vspace{0.5cm}
+  \begin{table}[H]
+  \begin{center}
+  \begin{tabular}{r l}
+      $LP:=$  & $\ \  x?:t_b.LP$ \\
+       & $|\ y!:t_b.LP$\\
+       & $|\ recX.LP$\\
+       & $|\ X$ \\
+       & $|\ end$\\
+       & \\
+       
+  \end{tabular}
+    \end{center}
+\caption {Local Protocol} \label{tab:localprotocol}
+\end{table}
+
+
+
